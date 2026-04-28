@@ -1,0 +1,148 @@
+@import "tailwindcss";
+
+:root {
+  --emerald-deep: #0A3A2A;
+  --emerald-forest: #06251A;
+  --emerald-mid: #0D4A34;
+  --gold-soft: #D4AF37;
+  --gold-light: #E8C547;
+  --sand: #F5E6C8;
+}
+
+@theme inline {
+  --color-emerald-deep: var(--emerald-deep);
+  --color-emerald-forest: var(--emerald-forest);
+  --color-emerald-mid: var(--emerald-mid);
+  --color-gold-soft: var(--gold-soft);
+  --color-gold-light: var(--gold-light);
+  --color-sand: var(--sand);
+  
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Outfit', sans-serif;
+  --font-cairo: 'Cairo', sans-serif;
+}
+
+
+body {
+  background-color: var(--emerald-forest);
+  color: white;
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Animated Islamic geometric pattern background */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url("/pattern.svg");
+  background-repeat: repeat;
+  background-size: 120px 120px;
+  animation: patternScroll 60s linear infinite;
+}
+
+/* Ensure all content sits above the pattern */
+body > * {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes patternScroll {
+  from { background-position: 0 0; }
+  to   { background-position: 120px 120px; }
+}
+
+/* Flat design cards instead of glass */
+.flat-card {
+  background-color: var(--emerald-deep);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 12px;
+}
+
+/* Gold text */
+.text-gold {
+  color: var(--gold-soft);
+}
+
+/* Buttons */
+.btn-gold {
+  background-color: var(--gold-soft);
+  color: var(--emerald-forest);
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-gold:hover {
+  background-color: var(--gold-light);
+}
+
+.btn-outline-gold {
+  background-color: transparent;
+  color: var(--gold-soft);
+  border: 1px solid var(--gold-soft);
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.btn-outline-gold:hover {
+  background-color: rgba(212, 175, 55, 0.1);
+}
+
+/* Section title */
+.section-title {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+}
+
+/* Card hover - simple color change instead of lift/shadow */
+.card-hover {
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.card-hover:hover {
+  border-color: var(--gold-soft);
+  background-color: var(--emerald-mid);
+}
+
+/* Scrollbar */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Volume slider */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--gold-soft);
+  cursor: pointer;
+  border: 2px solid var(--emerald-forest);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--gold-soft);
+  cursor: pointer;
+  border: 2px solid var(--emerald-forest);
+}
