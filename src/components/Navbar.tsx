@@ -2,19 +2,21 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, X, BookOpen, Radio, Bookmark, Clock, Hash, Heart } from "lucide-react";
+import { Menu, X, BookOpen, Radio, Bookmark, Clock, Hash, Heart, Globe } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 const navLinks = [
   { name: "Quran", arabic: "القرآن", href: "/quran", icon: BookOpen },
   { name: "Radio", arabic: "الإذاعة", href: "/radio", icon: Radio },
   { name: "Tafsir", arabic: "التفسير", href: "/tafsir", icon: Bookmark },
-  { name: "Prayer Times", arabic: "الصلاة", href: "/prayer-times", icon: Clock },
+  { name: "Prayer Times", arabic: "مواقيت الصلاة", href: "/prayer-times", icon: Clock },
   { name: "Tasbeeh", arabic: "التسبيح", href: "/tasbeeh", icon: Hash },
   { name: "Azkar", arabic: "الأذكار", href: "/azkar", icon: Heart },
 ];
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { language, toggleLanguage } = useLanguage();
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-emerald-deep border-b border-white/10">
@@ -37,17 +39,41 @@ export default function Navbar() {
                 className="group flex items-center gap-1.5 text-white/70 hover:text-gold-soft transition-colors duration-200"
               >
                 <link.icon className="w-4 h-4" />
-                <span className="text-sm font-medium">{link.name}</span>
+                <span className={`text-sm font-medium ${language === 'ar' ? 'font-[family-name:var(--font-cairo)]' : ''}`}>
+                  {language === "en" ? link.name : link.arabic}
+                </span>
               </Link>
             ))}
+            
+            <button
+              onClick={toggleLanguage}
+              className="flex items-center gap-1.5 text-white/70 hover:text-gold-soft transition-colors duration-200 border-l border-white/20 pl-6 ml-2"
+              aria-label="Toggle Language"
+            >
+              <Globe className="w-4 h-4" />
+              <span className="text-sm font-medium font-[family-name:var(--font-cairo)]">
+                {language === "en" ? "عربي" : "English"}
+              </span>
+            </button>
           </div>
 
-          <button
-            className="lg:hidden text-white hover:text-gold-soft transition-colors"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+          <div className="lg:hidden flex items-center gap-4">
+            <button
+              onClick={toggleLanguage}
+              className="text-white/70 hover:text-gold-soft transition-colors duration-200 flex items-center gap-1"
+            >
+              <Globe className="w-4 h-4" />
+              <span className="text-sm font-medium font-[family-name:var(--font-cairo)]">
+                {language === "en" ? "ع" : "EN"}
+              </span>
+            </button>
+            <button
+              className="text-white hover:text-gold-soft transition-colors"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -62,9 +88,11 @@ export default function Navbar() {
                 className="flex items-center gap-3 text-white/80 hover:text-gold-soft transition-colors py-3 px-2 rounded-lg hover:bg-emerald-mid"
               >
                 <link.icon className="w-5 h-5" />
-                <span className="text-base font-medium">{link.name}</span>
+                <span className={`text-base font-medium ${language === 'ar' ? 'font-[family-name:var(--font-cairo)]' : ''}`}>
+                  {language === "en" ? link.name : link.arabic}
+                </span>
                 <span className="text-sm text-gold-soft/60 font-[family-name:var(--font-cairo)] ml-auto">
-                  {link.arabic}
+                  {language === "en" ? link.arabic : link.name}
                 </span>
               </Link>
             ))}

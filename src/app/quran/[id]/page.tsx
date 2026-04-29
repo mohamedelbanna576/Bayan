@@ -3,8 +3,10 @@
 import { useState, useEffect, useRef, use } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { ArrowLeft, Pause, Loader2, Volume2, Volume1, VolumeX, ChevronDown } from "lucide-react";
+import { ArrowLeft, Pause, Loader2, Play, ChevronDown } from "lucide-react";
 import Link from "next/link";
+import { useAudio } from "@/context/AudioContext";
+import GlobalAudioPlayer from "@/components/GlobalAudioPlayer";
 
 interface Ayah {
   number: number;
@@ -28,20 +30,30 @@ interface Reciter {
   identifier: string;
   englishName: string;
   name: string;
+  bitrate?: number;
 }
 
 export default function SurahPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const [surah, setSurah] = useState<SurahData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [playing, setPlaying] = useState<number | null>(null);
-  const [surahAudioPlaying, setSurahAudioPlaying] = useState(false);
   const [reciters, setReciters] = useState<Reciter[]>([]);
   const [selectedReciter, setSelectedReciter] = useState<string>("ar.alafasy");
   const [showReciters, setShowReciters] = useState(false);
-  const [volume, setVolume] = useState(0.8);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const surahAudioRef = useRef<HTMLAudioElement | null>(null);
+  
+  const { currentTrack, isPlaying, playPlaylist, stopAudio, togglePlayPause } = useAudio();
+
+  const isSurahPlaying = currentTrack?.type === "quran" && currentTrack.id.toString().startsWith(`${surah?.number}-`);
+  
+  const getAyahPlaying = () => {
+    if (isSurahPlaying) {
+      const parts = currentTrack!.id.toString().split("-");
+      return parseInt(parts[1], 10);
+    }
+    return null;
+  };
+
+  const playingAyahNumber = getAyahPlaying();
 
   // Fetch surah
   useEffect(() => {
@@ -69,12 +81,30 @@ export default function SurahPage({ params }: { params: Promise<{ id: string }> 
         const data = await res.json();
         if (data.code === 200) {
           const arabicReciters = data.data
-            .filter((e: any) => e.language === "ar")
+            .filter((e: any) => e.language === "ar" && e.type === "versebyverse")
             .map((e: any) => ({
               identifier: e.identifier,
               englishName: e.englishName,
               name: e.name,
             }));
+          
+          // Add some more popular reciters if they are missing from the default API response
+          const moreSheikhs: Reciter[] = [
+            { identifier: "ar.mahermuaiqly", englishName: "Maher Al Muaiqly", name: "ماهر المعيقلي" },
+            { identifier: "ar.abdurrahmaansudais", englishName: "Abdurrahmaan As-Sudais", name: "عبد الرحمن السديس" },
+            { identifier: "ar.hudhaify", englishName: "Ali Al-Hudhaify", name: "علي الحذيفي" },
+            { identifier: "ar.saoodshuraym", englishName: "Saood Ash-Shuraym", name: "سعود الشريم" },
+            { identifier: "ar.minshawi", englishName: "Mohamed Siddiq al-Minshawi", name: "محمد صديق المنشاوي" },
+            { identifier: "ar.minshawimujawwad", englishName: "Mohamed Siddiq al-Minshawi (Mujawwad)", name: "محمد صديق المنشاوي (مجود)", bitrate: 64 },
+            { identifier: "ar.abdulsamad", englishName: "Abdul Basit (Mujawwad/Murattal)", name: "عبد الباسط عبد الصمد", bitrate: 64 }
+          ];
+          
+          moreSheikhs.forEach(sheikh => {
+            if (!arabicReciters.find((r: any) => r.identifier === sheikh.identifier)) {
+              arabicReciters.push(sheikh);
+            }
+          });
+          
           setReciters(arabicReciters);
         }
       } catch (err) {
@@ -84,101 +114,37 @@ export default function SurahPage({ params }: { params: Promise<{ id: string }> 
     fetchReciters();
   }, []);
 
-  // Apply volume to active audio elements
-  useEffect(() => {
-    if (audioRef.current) audioRef.current.volume = volume;
-    if (surahAudioRef.current) surahAudioRef.current.volume = volume;
-  }, [volume]);
+  const currentReciter = reciters.find(r => r.identifier === selectedReciter);
 
-  // Stop audio when reciter changes
-  useEffect(() => {
-    if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
-    if (surahAudioRef.current) { surahAudioRef.current.pause(); surahAudioRef.current = null; }
-    setPlaying(null);
-    setSurahAudioPlaying(false);
-  }, [selectedReciter]);
+  const getSurahTracks = () => {
+    if (!surah) return [];
+    const bitrate = currentReciter?.bitrate || 128;
+    return surah.ayahs.map(ayah => ({
+      id: `${surah.number}-${ayah.numberInSurah}`,
+      title: surah.name,
+      subtitle: `Ayah ${ayah.numberInSurah} · ${currentReciter ? currentReciter.name : ''}`,
+      url: `https://cdn.islamic.network/quran/audio/${bitrate}/${selectedReciter}/${ayah.number}.mp3`,
+      type: "quran" as const
+    }));
+  };
 
   const playAyah = (ayah: Ayah) => {
-    if (audioRef.current) {
-      audioRef.current.pause();
+    const tracks = getSurahTracks();
+    if (playingAyahNumber === ayah.numberInSurah) {
+      togglePlayPause();
+    } else {
+      playPlaylist(tracks, ayah.numberInSurah - 1);
     }
-    if (playing === ayah.numberInSurah) {
-      setPlaying(null);
-      return;
-    }
-
-    const url = `https://cdn.islamic.network/quran/audio/128/${selectedReciter}/${ayah.number}.mp3`;
-    const audio = new Audio(url);
-    audio.volume = volume;
-    audioRef.current = audio;
-    setPlaying(ayah.numberInSurah);
-    audio.play().catch(() => setPlaying(null));
-    audio.onended = () => setPlaying(null);
-    audio.onerror = () => setPlaying(null);
   };
 
   const toggleSurahAudio = () => {
-    if (surahAudioRef.current) {
-      if (surahAudioPlaying) {
-        surahAudioRef.current.pause();
-        setSurahAudioPlaying(false);
-      } else {
-        surahAudioRef.current.play();
-        setSurahAudioPlaying(true);
-      }
-      return;
+    if (isSurahPlaying) {
+      togglePlayPause();
+    } else {
+      const tracks = getSurahTracks();
+      playPlaylist(tracks, 0);
     }
-
-    if (!surah) return;
-    
-    let currentIndex = 0;
-    const playNext = () => {
-      if (currentIndex >= surah.ayahs.length) {
-        setSurahAudioPlaying(false);
-        surahAudioRef.current = null;
-        setPlaying(null);
-        return;
-      }
-      const ayah = surah.ayahs[currentIndex];
-      const url = `https://cdn.islamic.network/quran/audio/128/${selectedReciter}/${ayah.number}.mp3`;
-      const audio = new Audio(url);
-      audio.volume = volume;
-      surahAudioRef.current = audio;
-      setPlaying(ayah.numberInSurah);
-      audio.play().catch(() => {
-        setSurahAudioPlaying(false);
-        setPlaying(null);
-      });
-      audio.onended = () => {
-        currentIndex++;
-        playNext();
-      };
-      audio.onerror = () => {
-        setSurahAudioPlaying(false);
-        setPlaying(null);
-      };
-    };
-
-    setSurahAudioPlaying(true);
-    playNext();
   };
-
-  const stopAll = () => {
-    if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
-    if (surahAudioRef.current) { surahAudioRef.current.pause(); surahAudioRef.current = null; }
-    setPlaying(null);
-    setSurahAudioPlaying(false);
-  };
-
-  useEffect(() => {
-    return () => {
-      if (audioRef.current) audioRef.current.pause();
-      if (surahAudioRef.current) surahAudioRef.current.pause();
-    };
-  }, []);
-
-  const currentReciter = reciters.find(r => r.identifier === selectedReciter);
-  const VolumeIcon = volume === 0 ? VolumeX : volume < 0.5 ? Volume1 : Volume2;
 
   if (loading) {
     return (
@@ -218,6 +184,9 @@ export default function SurahPage({ params }: { params: Promise<{ id: string }> 
           <p className="text-white/50 text-sm">{surah.englishNameTranslation} · {surah.revelationType} · {surah.numberOfAyahs} Ayahs</p>
         </div>
 
+        {/* Now Playing Banner */}
+        <GlobalAudioPlayer />
+
         {/* Reciter Selector + Volume + Play */}
         <div className="flat-card p-4 mb-6 space-y-4">
           {/* Row 1: Reciter + Play */}
@@ -228,7 +197,7 @@ export default function SurahPage({ params }: { params: Promise<{ id: string }> 
                 className="w-full bg-emerald-forest border border-gold-soft/20 text-white rounded-lg px-4 py-3 flex items-center justify-between hover:border-gold-soft/40 transition-colors"
               >
                 <div className="flex items-center gap-2 truncate">
-                  <span className="text-gold-soft text-sm font-[family-name:var(--font-cairo)] truncate">
+                  <span className="text-gold-soft text-sm font-[family-name:var(--font-amiri)] truncate font-bold text-lg">
                     {currentReciter ? currentReciter.name : "مشاري العفاسي"}
                   </span>
                   <span className="text-white/40">·</span>
@@ -250,49 +219,31 @@ export default function SurahPage({ params }: { params: Promise<{ id: string }> 
                       }`}
                     >
                       <span className={`truncate ${selectedReciter === reciter.identifier ? "text-gold-soft" : "text-white/80"}`}>{reciter.englishName}</span>
-                      <span className="text-gold-soft/70 font-[family-name:var(--font-cairo)] text-xs shrink-0">{reciter.name}</span>
+                      <span className="text-gold-soft/70 font-[family-name:var(--font-amiri)] text-sm shrink-0 font-bold">{reciter.name}</span>
                     </button>
                   ))}
                 </div>
               )}
             </div>
 
-            {surahAudioPlaying ? (
+            {isSurahPlaying && isPlaying ? (
               <button
-                onClick={stopAll}
-                className="bg-red-500/20 text-red-400 border border-red-500/30 px-6 py-3 rounded-lg inline-flex items-center gap-2 text-sm shrink-0 w-full sm:w-auto justify-center hover:bg-red-500/30 transition-colors"
+                onClick={togglePlayPause}
+                className="bg-emerald-deep text-gold-soft border border-gold-soft/30 shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)] px-6 py-3 rounded-lg inline-flex items-center gap-2 text-sm shrink-0 w-full sm:w-auto justify-center transition-colors"
               >
-                <Pause className="w-4 h-4" /> Stop
+                <Pause className="w-4 h-4" /> Pause Surah
               </button>
             ) : (
               <button
                 onClick={toggleSurahAudio}
                 className="btn-gold px-6 py-3 inline-flex items-center gap-2 text-sm shrink-0 w-full sm:w-auto justify-center"
               >
-                <Volume2 className="w-4 h-4" /> Play Full Surah
+                <Play className="w-4 h-4" /> {isSurahPlaying ? "Resume Surah" : "Play Full Surah"}
               </button>
             )}
           </div>
 
-          {/* Row 2: Volume Control */}
-          <div className="flex items-center gap-3 px-1">
-            <button onClick={() => setVolume(volume === 0 ? 0.8 : 0)} className="text-white/60 hover:text-gold-soft transition-colors">
-              <VolumeIcon className="w-5 h-5" />
-            </button>
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.01"
-              value={volume}
-              onChange={(e) => setVolume(parseFloat(e.target.value))}
-              className="flex-1 h-1.5 rounded-full appearance-none cursor-pointer"
-              style={{
-                background: `linear-gradient(to right, var(--gold-soft) 0%, var(--gold-soft) ${volume * 100}%, rgba(255,255,255,0.15) ${volume * 100}%, rgba(255,255,255,0.15) 100%)`,
-              }}
-            />
-            <span className="text-white/40 text-xs w-8 text-right">{Math.round(volume * 100)}%</span>
-          </div>
+        {/* Volume Control is now managed globally by GlobalAudioPlayer */}
         </div>
 
         {/* Bismillah */}
@@ -310,15 +261,15 @@ export default function SurahPage({ params }: { params: Promise<{ id: string }> 
                 <span
                   onClick={() => playAyah(ayah)}
                   className={`font-[family-name:var(--font-amiri)] text-2xl sm:text-3xl leading-[2.8] cursor-pointer transition-colors hover:text-gold-soft ${
-                    playing === ayah.numberInSurah ? "text-gold-soft" : "text-white"
+                    playingAyahNumber === ayah.numberInSurah ? "text-gold-soft drop-shadow-[0_0_8px_rgba(212,175,55,0.4)]" : "text-white"
                   }`}
                 >
                   {ayah.text}
                 </span>
                 <span
                   className={`inline-flex items-center justify-center w-8 h-8 mx-1 rounded-full text-xs font-bold align-middle cursor-pointer transition-colors ${
-                    playing === ayah.numberInSurah
-                      ? "bg-gold-soft text-emerald-forest"
+                    playingAyahNumber === ayah.numberInSurah
+                      ? "bg-gold-soft text-emerald-forest shadow-[0_0_10px_rgba(212,175,55,0.5)]"
                       : "bg-white/10 text-gold-soft hover:bg-gold-soft/20"
                   }`}
                   onClick={() => playAyah(ayah)}

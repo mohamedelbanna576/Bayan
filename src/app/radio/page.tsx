@@ -3,7 +3,9 @@
 import { useState, useEffect, useRef } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Search, Radio as RadioIcon, Loader2, Play, Pause, Volume2, VolumeX } from "lucide-react";
+import { Search, Radio as RadioIcon, Loader2, Play, Pause, Volume2, Volume1, VolumeX } from "lucide-react";
+import { useAudio } from "@/context/AudioContext";
+import GlobalAudioPlayer from "@/components/GlobalAudioPlayer";
 
 interface RadioStation {
   id: number;
@@ -16,9 +18,17 @@ export default function IslamicRadio() {
   const [filtered, setFiltered] = useState<RadioStation[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
-  const [playingId, setPlayingId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  
+  const { currentTrack, isPlaying, playTrack, stopAudio, togglePlayPause } = useAudio();
+  
+  const isCurrentlyPlaying = (stationId: number) => {
+    return currentTrack?.type === "radio" && currentTrack.id === stationId && isPlaying;
+  };
+
+  const isCurrentStation = (stationId: number) => {
+    return currentTrack?.type === "radio" && currentTrack.id === stationId;
+  };
 
   useEffect(() => {
     const fetchRadios = async () => {
@@ -30,7 +40,7 @@ export default function IslamicRadio() {
           const mapped = data.radios.map((r: any, index: number) => ({
             id: r.id || index + 1,
             name: r.name,
-            url: r.url,
+            url: r.url ? r.url.replace("http://", "https://") : r.url,
           }));
           setStations(mapped);
           setFiltered(mapped);
@@ -57,36 +67,17 @@ export default function IslamicRadio() {
   }, [search, stations]);
 
   const togglePlay = (station: RadioStation) => {
-    if (playingId === station.id) {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current.src = "";
-        audioRef.current = null;
-      }
-      setPlayingId(null);
-      return;
+    if (isCurrentStation(station.id)) {
+      togglePlayPause();
+    } else {
+      playTrack({
+        id: station.id,
+        title: station.name,
+        url: station.url,
+        type: "radio"
+      });
     }
-
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.src = "";
-    }
-
-    const audio = new Audio(station.url);
-    audioRef.current = audio;
-    setPlayingId(station.id);
-    audio.play().catch(() => setPlayingId(null));
-    audio.onerror = () => setPlayingId(null);
   };
-
-  useEffect(() => {
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current.src = "";
-      }
-    };
-  }, []);
 
   return (
     <main className="min-h-screen bg-emerald-forest pt-24">
@@ -102,27 +93,7 @@ export default function IslamicRadio() {
         </div>
 
         {/* Now Playing Banner */}
-        {playingId && (
-          <div className="flat-card p-4 mb-6 flex items-center justify-between" style={{ borderColor: "var(--gold-soft)" }}>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gold-soft/20 flex items-center justify-center">
-                <Volume2 className="w-5 h-5 text-gold-soft animate-pulse" />
-              </div>
-              <div>
-                <p className="text-xs text-gold-soft font-bold uppercase tracking-wide">Now Playing</p>
-                <p className="text-white font-bold font-[family-name:var(--font-cairo)]">
-                  {stations.find((s) => s.id === playingId)?.name}
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={() => togglePlay(stations.find((s) => s.id === playingId)!)}
-              className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center text-red-400 hover:bg-red-500/30 transition-colors"
-            >
-              <VolumeX className="w-5 h-5" />
-            </button>
-          </div>
-        )}
+        <GlobalAudioPlayer />
 
         {/* Search */}
         <div className="flat-card p-6 mb-8">
@@ -150,28 +121,34 @@ export default function IslamicRadio() {
             {filtered.map((station) => (
               <div key={station.id} className="flat-card p-6 flex flex-col items-center card-hover">
                 <div className="mb-6 mt-4">
-                  <RadioIcon className={`w-12 h-12 ${playingId === station.id ? "text-gold-soft animate-pulse" : "text-gold-soft"}`} />
+                  <RadioIcon className={`w-12 h-12 ${isCurrentlyPlaying(station.id) ? "text-gold-soft animate-pulse" : "text-gold-soft"}`} />
                 </div>
                 <h3 className="text-white font-bold font-[family-name:var(--font-cairo)] text-center mb-4 text-sm leading-relaxed min-h-[3rem] flex items-center">
                   {station.name}
                 </h3>
 
                 <div className="bg-white/10 px-3 py-1 rounded text-xs text-white/70 mb-6 flex items-center gap-2">
-                  <span className={`w-2 h-2 rounded-full ${playingId === station.id ? "bg-red-400 animate-pulse" : "bg-gold-soft"}`}></span>
-                  {playingId === station.id ? "Live Now" : "Live Radio"}
+                  <span className={`w-2 h-2 rounded-full ${isCurrentlyPlaying(station.id) ? "bg-red-400 animate-pulse" : "bg-gold-soft"}`}></span>
+                  {isCurrentStation(station.id) ? "Selected" : "Live Radio"}
                 </div>
 
                 <button
                   onClick={() => togglePlay(station)}
                   className={`w-full font-medium py-3 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm mt-auto ${
-                    playingId === station.id
-                      ? "bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/30"
+                    isCurrentStation(station.id)
+                      ? isCurrentlyPlaying(station.id)
+                        ? "bg-emerald-deep text-gold-soft border border-gold-soft/30 shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)]"
+                        : "bg-emerald-mid hover:bg-emerald-deep text-white border border-gold-soft/50"
                       : "bg-emerald-mid hover:bg-emerald-deep text-white border border-white/10"
                   }`}
                 >
-                  {playingId === station.id ? (
+                  {isCurrentlyPlaying(station.id) ? (
                     <>
-                      <Pause className="w-4 h-4" /> Stop
+                      <Pause className="w-4 h-4" /> Pause
+                    </>
+                  ) : isCurrentStation(station.id) ? (
+                     <>
+                      <Play className="w-4 h-4 text-gold-soft" /> Resume
                     </>
                   ) : (
                     <>

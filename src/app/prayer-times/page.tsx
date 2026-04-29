@@ -3,144 +3,261 @@
 import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Calendar, MapPin, Clock, Loader2 } from "lucide-react";
+import { MapPin, Clock, Loader2, Calendar, Navigation } from "lucide-react";
 
-function to12Hour(time24: string): string {
-  if (!time24) return "--:--";
-  const [timePart] = time24.split(" ");
-  const [hourStr, minuteStr] = timePart.split(":");
-  let hour = parseInt(hourStr, 10);
-  const minute = minuteStr;
-  const ampm = hour >= 12 ? "PM" : "AM";
-  hour = hour % 12;
-  if (hour === 0) hour = 12;
-  return `${hour}:${minute} ${ampm}`;
+interface PrayerTimesData {
+  Fajr: string;
+  Sunrise: string;
+  Dhuhr: string;
+  Asr: string;
+  Maghrib: string;
+  Isha: string;
 }
 
-const locations = [
-  { city: "Cairo", country: "Egypt", name: "Cairo" },
-  { city: "Makkah", country: "Saudi Arabia", name: "Mecca" },
-  { city: "Madinah", country: "Saudi Arabia", name: "Medina" },
-  { city: "Istanbul", country: "Turkey", name: "Istanbul" },
-  { city: "Dubai", country: "United Arab Emirates", name: "Dubai" },
-  { city: "Riyadh", country: "Saudi Arabia", name: "Riyadh" },
-  { city: "London", country: "United Kingdom", name: "London" },
-  { city: "New York", country: "United States", name: "New York" },
-];
-
-const prayerData = [
-  { id: "Fajr", name: "Fajr", arabic: "الفجر", color: "text-emerald-500", bg: "bg-[#1A2A3A]", img: "https://images.unsplash.com/photo-1542816417-0983c9c9ad53?q=80&w=1000&auto=format&fit=crop" },
-  { id: "Dhuhr", name: "Dhuhr", arabic: "الظهر", color: "text-blue-400", bg: "bg-[#3A5A7A]", img: "https://images.unsplash.com/photo-1564507004663-b6dfb3c824d5?q=80&w=1000&auto=format&fit=crop" },
-  { id: "Asr", name: "Asr", arabic: "العصر", color: "text-orange-400", bg: "bg-[#8C6239]", img: "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?q=80&w=1000&auto=format&fit=crop" },
-  { id: "Maghrib", name: "Maghrib", arabic: "المغرب", color: "text-red-400", bg: "bg-[#6A3A3A]", img: "https://images.unsplash.com/photo-1494548162494-384bba4ab999?q=80&w=1000&auto=format&fit=crop" },
-  { id: "Isha", name: "Isha", arabic: "العشاء", color: "text-indigo-400", bg: "bg-[#1A1A2A]", img: "https://images.unsplash.com/photo-1519817914152-2a6401de37b4?q=80&w=1000&auto=format&fit=crop" },
+const commonLocations = [
+  { country: "Egypt", city: "Cairo", label: "Cairo, Egypt - القاهرة، مصر" },
+  { country: "Saudi Arabia", city: "Makkah", label: "Makkah, Saudi Arabia - مكة المكرمة، السعودية" },
+  { country: "Saudi Arabia", city: "Madinah", label: "Madinah, Saudi Arabia - المدينة المنورة، السعودية" },
+  { country: "Saudi Arabia", city: "Riyadh", label: "Riyadh, Saudi Arabia - الرياض، السعودية" },
+  { country: "United Arab Emirates", city: "Dubai", label: "Dubai, UAE - دبي، الإمارات" },
+  { country: "Palestine", city: "Jerusalem", label: "Jerusalem, Palestine - القدس، فلسطين" },
+  { country: "Jordan", city: "Amman", label: "Amman, Jordan - عمّان، الأردن" },
+  { country: "Morocco", city: "Casablanca", label: "Casablanca, Morocco - الدار البيضاء، المغرب" },
+  { country: "Algeria", city: "Algiers", label: "Algiers, Algeria - الجزائر، الجزائر" },
+  { country: "Turkey", city: "Istanbul", label: "Istanbul, Turkey - إسطنبول، تركيا" },
+  { country: "United Kingdom", city: "London", label: "London, UK - لندن، بريطانيا" },
+  { country: "United States", city: "New York", label: "New York, USA - نيويورك، أمريكا" }
 ];
 
 export default function PrayerTimes() {
-  const [selectedLoc, setSelectedLoc] = useState(0);
-  const [timings, setTimings] = useState<any>(null);
-  const [dateInfo, setDateInfo] = useState<any>(null);
+  const [times, setTimes] = useState<PrayerTimesData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [locationName, setLocationName] = useState<string>("Detecting location...");
+  const [dateStr, setDateStr] = useState<string>("");
 
   useEffect(() => {
-    const fetchPrayerTimes = async () => {
-      setLoading(true);
-      try {
-        const loc = locations[selectedLoc];
-        const res = await fetch(`https://api.aladhan.com/v1/timingsByCity?city=${loc.city}&country=${loc.country}&method=8`);
-        const data = await res.json();
-        
-        if (data.code === 200) {
-          setTimings(data.data.timings);
-          setDateInfo({
-            gregorian: data.data.date.gregorian.date,
-            hijri: `${data.data.date.hijri.day}-${data.data.date.hijri.month.number}-${data.data.date.hijri.year}`
-          });
+    // Format current date
+    const now = new Date();
+    const options: Intl.DateTimeFormatOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    setDateStr(now.toLocaleDateString('en-US', options));
+
+    // Try geolocation first, if denied, fallback to Cairo
+    handleDetectLocation(true);
+  }, []);
+
+  const handleDetectLocation = (isInitial = false) => {
+    setLoading(true);
+    setError(null);
+    setLocationName("Detecting GPS location...");
+
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+          fetchPrayerTimesByCoords(latitude, longitude);
+          
+          try {
+            const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`);
+            const data = await res.json();
+            setLocationName(`${data.city || data.locality || 'Unknown City'}, ${data.countryName || ''}`);
+          } catch {
+            setLocationName("Your GPS Location");
+          }
+        },
+        (err) => {
+          console.error(err);
+          if (isInitial) {
+            // Fallback to default if denied on first load
+            fetchPrayerTimesByCity("Cairo", "Egypt");
+            setError("Location access denied. Displaying default location (Cairo).");
+          } else {
+            setError("Location access denied. Please enable location services in your browser.");
+            setLoading(false);
+          }
         }
-      } catch (error) {
-        console.error("Failed to fetch prayer times:", error);
-      } finally {
+      );
+    } else {
+      if (isInitial) {
+        fetchPrayerTimesByCity("Cairo", "Egypt");
+      } else {
+        setError("Geolocation is not supported by your browser.");
         setLoading(false);
       }
-    };
+    }
+  };
 
-    fetchPrayerTimes();
-  }, [selectedLoc]);
+  const fetchPrayerTimesByCoords = async (lat: number, lng: number) => {
+    try {
+      const now = new Date();
+      const timestamp = Math.floor(now.getTime() / 1000);
+      const res = await fetch(`https://api.aladhan.com/v1/timings/${timestamp}?latitude=${lat}&longitude=${lng}&method=2`);
+      const data = await res.json();
+      
+      if (data.code === 200) {
+        setPrayerData(data.data.timings);
+      } else {
+        setError("Could not fetch prayer times.");
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Failed to connect to prayer times service.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchPrayerTimesByCity = async (city: string, country: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch(`https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}&method=2`);
+      const data = await res.json();
+      
+      if (data.code === 200) {
+        setPrayerData(data.data.timings);
+        setLocationName(`${city}, ${country}`);
+      } else {
+        setError("Could not fetch prayer times for this location.");
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Failed to connect to prayer times service.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const setPrayerData = (pt: any) => {
+    setTimes({
+      Fajr: pt.Fajr,
+      Sunrise: pt.Sunrise,
+      Dhuhr: pt.Dhuhr,
+      Asr: pt.Asr,
+      Maghrib: pt.Maghrib,
+      Isha: pt.Isha
+    });
+  };
+
+  const convertTo12Hour = (time24: string) => {
+    const [hours, minutes] = time24.split(":");
+    let h = parseInt(hours, 10);
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12;
+    h = h ? h : 12; 
+    return `${h}:${minutes} ${ampm}`;
+  };
+
+  const prayersList = times ? [
+    { name: "Fajr", arabic: "الفَجْر", time: times.Fajr },
+    { name: "Sunrise", arabic: "الشروق", time: times.Sunrise },
+    { name: "Dhuhr", arabic: "الظُّهْر", time: times.Dhuhr },
+    { name: "Asr", arabic: "العَصْر", time: times.Asr },
+    { name: "Maghrib", arabic: "المَغْرِب", time: times.Maghrib },
+    { name: "Isha", arabic: "العِشَاء", time: times.Isha }
+  ] : [];
 
   return (
     <main className="min-h-screen bg-emerald-forest pt-24">
       <Navbar />
-      
-      <div className="pb-24 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-gold-soft font-[family-name:var(--font-cairo)] mb-4">أوقات الصلاة</h1>
+
+      <div className="pb-24 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-10 animate-in slide-in-from-bottom-5 duration-500">
+          <h1 className="text-5xl font-bold text-gold-soft font-[family-name:var(--font-cairo)] mb-4">مَوَاقِيتُ الصَّلَاة</h1>
           <p className="text-white text-lg">Prayer Times</p>
         </div>
 
-        {/* Location Bar */}
-        <div className="flat-card p-6 flex flex-col md:flex-row items-center justify-between mb-8 gap-6">
-          <div className="flex items-center gap-6 sm:gap-12 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
-            <div className="flex items-center gap-3 shrink-0">
-              <Calendar className="w-5 h-5 text-gold-soft" />
-              <div>
-                <div className="text-white font-bold">{dateInfo ? dateInfo.gregorian : "..."}</div>
-                <div className="text-white/50 text-xs">{dateInfo ? dateInfo.hijri : "..."}</div>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3 shrink-0">
-              <MapPin className="w-5 h-5 text-gold-soft" />
-              <div>
-                <div className="text-white font-bold">{locations[selectedLoc].city}</div>
-                <div className="text-white/50 text-xs">{locations[selectedLoc].country}</div>
-              </div>
-            </div>
-          </div>
-
-          <div className="w-full md:w-64">
-            <select 
-              value={selectedLoc}
-              onChange={(e) => setSelectedLoc(Number(e.target.value))}
-              className="w-full bg-emerald-forest border border-gold-soft/30 text-white rounded-lg px-4 py-3 appearance-none focus:outline-none focus:border-gold-soft"
-            >
-              {locations.map((loc, index) => (
-                <option key={index} value={index}>{loc.name}</option>
-              ))}
-            </select>
-          </div>
+        {/* Location Selector */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8 animate-in fade-in duration-700 delay-100">
+          <select 
+            className="glass-card bg-emerald-deep/80 text-white px-4 py-3 rounded-xl border border-gold-soft/30 focus:outline-none focus:border-gold-soft cursor-pointer w-full sm:w-auto"
+            onChange={(e) => {
+              if (e.target.value === "gps") {
+                handleDetectLocation(false);
+              } else {
+                const loc = commonLocations[parseInt(e.target.value)];
+                fetchPrayerTimesByCity(loc.city, loc.country);
+              }
+            }}
+            defaultValue="default"
+          >
+            <option value="default" disabled>Select a City / اختر مدينة</option>
+            {commonLocations.map((loc, idx) => (
+              <option key={idx} value={idx}>{loc.label}</option>
+            ))}
+          </select>
+          
+          <button 
+            onClick={() => handleDetectLocation(false)}
+            className="glass-card px-6 py-3 rounded-xl border border-gold-soft/30 hover:bg-gold-soft/10 text-white flex items-center gap-2 transition-colors w-full sm:w-auto justify-center"
+          >
+            <Navigation className="w-4 h-4 text-gold-soft" />
+            <span>Use My Location</span>
+          </button>
         </div>
 
-        {/* Times Grid */}
-        {loading ? (
-          <div className="flex justify-center items-center py-24">
-            <Loader2 className="w-12 h-12 text-gold-soft animate-spin" />
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {prayerData.map((prayer) => (
-              <div key={prayer.id} className="flat-card overflow-hidden h-full flex flex-col">
-                <div className={`h-24 ${prayer.bg} relative flex items-center justify-center border-b border-white/5`}>
-                  <div 
-                    className="absolute inset-0 opacity-50 bg-cover bg-center" 
-                    style={{ backgroundImage: `url('${prayer.img}')` }}
-                  />
-                  <Clock className="w-8 h-8 text-white/50 relative z-10" />
-                </div>
-                <div className="p-4 text-center flex-1 flex flex-col justify-center">
-                  <h3 className="text-white font-bold text-base mb-1">{prayer.name}</h3>
-                  <p className="text-white/80 font-[family-name:var(--font-cairo)] text-lg mb-3">{prayer.arabic}</p>
-                  <div className={`text-2xl font-bold ${prayer.color}`}>
-                    {timings ? to12Hour(timings[prayer.id]) : "--:--"}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+        {error && !times && (
+           <div className="glass-card p-6 mb-8 rounded-2xl text-center text-red-400 max-w-md mx-auto">
+             {error}
+           </div>
         )}
 
-        <div className="text-center mt-12 text-white/50 text-sm max-w-lg mx-auto">
-          Prayer times are calculated based on your selected location in real-time.
-        </div>
+        {loading ? (
+          <div className="flex justify-center items-center py-24 glass-card rounded-2xl">
+            <Loader2 className="w-12 h-12 text-gold-soft animate-spin" />
+            <span className="ml-4 text-white/60">{locationName.includes("GPS") ? "Getting GPS signal..." : "Loading times..."}</span>
+          </div>
+        ) : times ? (
+          <div className="space-y-8 animate-in fade-in duration-700">
+            {error && (
+              <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-4 rounded-xl text-center text-sm">
+                {error}
+              </div>
+            )}
+            
+            {/* Header Card */}
+            <div className="glass-card p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-gold-soft/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none"></div>
+              
+              <div className="flex items-center gap-4 text-white z-10">
+                <div className="w-12 h-12 rounded-full bg-emerald-mid flex items-center justify-center border border-white/10">
+                  <MapPin className="w-6 h-6 text-gold-soft" />
+                </div>
+                <div>
+                  <h2 className="font-bold text-xl">{locationName}</h2>
+                  <p className="text-white/60 text-sm flex items-center gap-2 mt-1">
+                    <Calendar className="w-4 h-4" /> {dateStr}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Times Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+              {prayersList.map((prayer, index) => (
+                <div 
+                  key={prayer.name} 
+                  className="glass-card p-6 text-center card-hover relative overflow-hidden group"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent to-emerald-mid/50 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  
+                  <Clock className="w-8 h-8 text-gold-soft/50 mx-auto mb-4 group-hover:text-gold-soft transition-colors" />
+                  
+                  <h3 className="text-2xl font-bold font-[family-name:var(--font-amiri)] text-white mb-1">
+                    {prayer.arabic}
+                  </h3>
+                  <p className="text-white/50 text-sm uppercase tracking-widest mb-4">
+                    {prayer.name}
+                  </p>
+                  <div className="inline-block bg-emerald-deep px-4 py-2 rounded-lg border border-gold-soft/20 text-gold-light font-bold font-mono text-lg">
+                    {convertTo12Hour(prayer.time)}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : null}
       </div>
 
       <Footer />

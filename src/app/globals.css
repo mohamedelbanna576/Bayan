@@ -17,11 +17,9 @@
   --color-gold-light: var(--gold-light);
   --color-sand: var(--sand);
   
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-display: 'Outfit', sans-serif;
-  --font-cairo: 'Cairo', sans-serif;
+  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-display-theme: var(--font-display), sans-serif;
 }
-
 
 body {
   background-color: var(--emerald-forest);
@@ -55,11 +53,14 @@ body > * {
   to   { background-position: 120px 120px; }
 }
 
-/* Flat design cards instead of glass */
-.flat-card {
-  background-color: var(--emerald-deep);
+/* Glassmorphism design cards */
+.flat-card, .glass-card {
+  background-color: rgba(10, 58, 42, 0.85); /* emerald-deep with opacity */
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(212, 175, 55, 0.2);
-  border-radius: 12px;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
 /* Gold text */
@@ -99,21 +100,23 @@ body > * {
 
 /* Section title */
 .section-title {
-  font-family: var(--font-display);
+  font-family: var(--font-display-theme);
   font-size: 3rem;
   font-weight: 700;
   line-height: 1.2;
   margin-bottom: 1.5rem;
 }
 
-/* Card hover - simple color change instead of lift/shadow */
+/* Card hover - premium lift effect */
 .card-hover {
-  transition: border-color 0.2s ease, background-color 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .card-hover:hover {
   border-color: var(--gold-soft);
-  background-color: var(--emerald-mid);
+  background-color: rgba(13, 74, 52, 0.95); /* emerald-mid with opacity */
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
 }
 
 /* Scrollbar */

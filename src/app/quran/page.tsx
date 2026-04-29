@@ -98,7 +98,7 @@ export default function Quran() {
                       {surah.number}
                     </span>
                   </div>
-                  <h3 className="text-white font-bold font-[family-name:var(--font-cairo)] text-center text-xl mb-1">
+                  <h3 className="text-white font-bold font-[family-name:var(--font-amiri)] text-center text-3xl mb-1">
                     {surah.name}
                   </h3>
                   <p className="text-sm text-white/50 mb-1">{surah.englishName}</p>

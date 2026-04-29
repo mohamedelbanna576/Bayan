@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Inter, Outfit, Cairo, Amiri } from "next/font/google";
 import "./globals.css";
+import { LanguageProvider } from "@/context/LanguageContext";
+import { AudioProvider } from "@/context/AudioContext";
+import GlobalAudioPlayer from "@/components/GlobalAudioPlayer";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -38,7 +41,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} ${outfit.variable} ${cairo.variable} ${amiri.variable}`} suppressHydrationWarning>
-      <body className="min-h-screen antialiased" suppressHydrationWarning>{children}</body>
+      <body className="min-h-screen antialiased" suppressHydrationWarning>
+        <LanguageProvider>
+          <AudioProvider>
+            {children}
+          </AudioProvider>
+        </LanguageProvider>
+      </body>
     </html>
   );
 }
