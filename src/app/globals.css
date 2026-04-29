@@ -29,30 +29,6 @@ body {
   overflow-x: hidden;
 }
 
-/* Animated Islamic geometric pattern background */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-image: url("/pattern.svg");
-  background-repeat: repeat;
-  background-size: 120px 120px;
-  animation: patternScroll 60s linear infinite;
-}
-
-/* Ensure all content sits above the pattern */
-body > * {
-  position: relative;
-  z-index: 1;
-}
-
-@keyframes patternScroll {
-  from { background-position: 0 0; }
-  to   { background-position: 120px 120px; }
-}
-
 /* Glassmorphism design cards */
 .flat-card, .glass-card {
   background-color: rgba(10, 58, 42, 0.85); /* emerald-deep with opacity */
