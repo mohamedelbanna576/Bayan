@@ -4,10 +4,10 @@ import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 
 const footerLinks = [
-  { name: "About", arabic: "عن المنصة", href: "#" },
-  { name: "Privacy", arabic: "الخصوصية", href: "#" },
-  { name: "Terms", arabic: "الشروط", href: "#" },
-  { name: "Contact", arabic: "اتصل بنا", href: "#" },
+  { name: "About", arabic: "عن المنصة", href: "/about" },
+  { name: "Privacy", arabic: "الخصوصية", href: "/privacy" },
+  { name: "Terms", arabic: "الشروط", href: "/terms" },
+  { name: "Contact", arabic: "اتصل بنا", href: "/contact" },
 ];
 
 export default function Footer() {
