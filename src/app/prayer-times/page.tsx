@@ -16,6 +16,7 @@ interface PrayerTimesData {
 
 const commonLocations = [
   { country: "Egypt", city: "Cairo", label: "Cairo, Egypt - القاهرة، مصر" },
+  { country: "Egypt", city: "Alexandria", label: "Alexandria, Egypt - الإسكندرية، مصر" },
   { country: "Saudi Arabia", city: "Makkah", label: "Makkah, Saudi Arabia - مكة المكرمة، السعودية" },
   { country: "Saudi Arabia", city: "Madinah", label: "Madinah, Saudi Arabia - المدينة المنورة، السعودية" },
   { country: "Saudi Arabia", city: "Riyadh", label: "Riyadh, Saudi Arabia - الرياض، السعودية" },
@@ -91,7 +92,7 @@ export default function PrayerTimes() {
     try {
       const now = new Date();
       const timestamp = Math.floor(now.getTime() / 1000);
-      const res = await fetch(`https://api.aladhan.com/v1/timings/${timestamp}?latitude=${lat}&longitude=${lng}&method=2`);
+      const res = await fetch(`https://api.aladhan.com/v1/timings/${timestamp}?latitude=${lat}&longitude=${lng}`);
       const data = await res.json();
       
       if (data.code === 200) {
@@ -111,7 +112,7 @@ export default function PrayerTimes() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}&method=2`);
+      const res = await fetch(`https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}`);
       const data = await res.json();
       
       if (data.code === 200) {
