@@ -47,11 +47,12 @@ export default function Quran() {
       
       const normalizeArabic = (text: string) => {
         return text
-          .replace(/[\u0617-\u061A\u064B-\u0652]/g, "") // Remove tashkeel
-          .replace(/[أإآ]/g, "ا") // Normalize Alef
+          .replace(/[\u064B-\u065F\u0670]/g, "") // Remove ALL Arabic diacritics
+          .replace(/[أإآٱ]/g, "ا") // Normalize all types of Alef
           .replace(/ة/g, "ه") // Normalize Teh Marbuta to Heh
           .replace(/سورة /g, "") // Remove 'Surah '
-          .replace(/سوره /g, "");
+          .replace(/سوره /g, "")
+          .trim();
       };
 
       const normalizedQuery = normalizeArabic(q);

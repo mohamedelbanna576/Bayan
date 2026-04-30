@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
@@ -140,7 +140,9 @@ export default function PrayerTimes() {
   };
 
   const convertTo12Hour = (time24: string) => {
-    const [hours, minutes] = time24.split(":");
+    // Aladhan API returns times like "05:12 (EET)", so strip everything after the space
+    const cleanTime = time24.split(" ")[0];
+    const [hours, minutes] = cleanTime.split(":");
     let h = parseInt(hours, 10);
     const ampm = h >= 12 ? 'PM' : 'AM';
     h = h % 12;
