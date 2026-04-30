@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
@@ -70,7 +70,7 @@ export default function Azkar() {
 
       <div className="pb-24 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 animate-in slide-in-from-bottom-5 duration-500">
-          <h1 className="text-5xl font-bold text-gold-soft font-[family-name:var(--font-cairo)] mb-4">الأَذْكَار</h1>
+          <h1 className="text-5xl font-bold text-gold-soft font-[family-name:var(--font-tajawal)] mb-4">الأَذْكَار</h1>
           <p className="text-white text-lg">Daily Supplications</p>
         </div>
 
@@ -143,7 +143,7 @@ export default function Azkar() {
                   </p>
                   
                   {zikr.virtue && (
-                    <p className="mt-4 text-sm text-gold-light/80 bg-emerald-deep/50 inline-block px-4 py-2 rounded-lg font-[family-name:var(--font-cairo)]">
+                    <p className="mt-4 text-sm text-gold-light/80 bg-emerald-deep/50 inline-block px-4 py-2 rounded-lg font-[family-name:var(--font-tajawal)]">
                       {zikr.virtue}
                     </p>
                   )}

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, useRef } from "react";
 import Navbar from "@/components/Navbar";
@@ -85,7 +85,7 @@ export default function IslamicRadio() {
 
       <div className="pb-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-gold-soft font-[family-name:var(--font-cairo)] mb-4">إِذَاعَةُ القُرْآنِ الكَرِيمِ</h1>
+          <h1 className="text-5xl font-bold text-gold-soft font-[family-name:var(--font-tajawal)] mb-4">إِذَاعَةُ القُرْآنِ الكَرِيمِ</h1>
           <p className="text-white text-lg">Islamic Radio Stations</p>
           <p className="text-white/60 text-sm mt-4 max-w-2xl mx-auto">
             Listen to live Islamic radio stations from around the world, featuring Quran recitations from renowned reciters.
@@ -123,7 +123,7 @@ export default function IslamicRadio() {
                 <div className="mb-6 mt-4">
                   <RadioIcon className={`w-12 h-12 ${isCurrentlyPlaying(station.id) ? "text-gold-soft animate-pulse" : "text-gold-soft"}`} />
                 </div>
-                <h3 className="text-white font-bold font-[family-name:var(--font-cairo)] text-center mb-4 text-sm leading-relaxed min-h-[3rem] flex items-center">
+                <h3 className="text-white font-bold font-[family-name:var(--font-tajawal)] text-center mb-4 text-sm leading-relaxed min-h-[3rem] flex items-center">
                   {station.name}
                 </h3>
 

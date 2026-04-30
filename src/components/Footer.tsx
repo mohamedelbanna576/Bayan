@@ -18,11 +18,12 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <Link href="/" className="flex items-center gap-3">
-            <span className="text-xl font-bold text-gold-soft font-[family-name:var(--font-cairo)]">
-              ذِكْر
+            <img src="/assets/logo.png" alt="Bayan Logo" className="h-8 w-auto" />
+            <span className="text-xl font-bold text-gold-soft font-[family-name:var(--font-tajawal)]">
+              بيان
             </span>
             <span className="text-sm font-medium text-white/60">
-              {t("Dhikr", "ذكر")}
+              {t("Bayan", "بيان")}
             </span>
           </Link>
 
@@ -31,7 +32,7 @@ export default function Footer() {
               <a
                 key={link.name}
                 href={link.href}
-                className={`text-sm text-white/60 hover:text-gold-soft transition-colors ${language === 'ar' ? 'font-[family-name:var(--font-cairo)]' : ''}`}
+                className={`text-sm text-white/60 hover:text-gold-soft transition-colors ${language === 'ar' ? 'font-[family-name:var(--font-tajawal)]' : ''}`}
               >
                 {t(link.name, link.arabic)}
               </a>
@@ -40,7 +41,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-8 text-center text-xs text-white/30">
-          {t("© 2026 Dhikr Platform. Made by Mohamed El Banna.", "© 2026 منصة ذِكْر. صنع بواسطة محمد البنا.")}
+          {t("© 2026 Bayan Platform. Made by Mohamed El Banna.", "© 2026 منصة بيان. صنع بواسطة محمد البنا.")}
         </div>
       </div>
     </footer>

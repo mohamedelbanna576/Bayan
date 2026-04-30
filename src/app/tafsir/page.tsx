@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
@@ -61,7 +61,7 @@ export default function Tafsir() {
 
       <div className="pb-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-gold-soft font-[family-name:var(--font-cairo)] mb-4">تفسير القرآن الكريم</h1>
+          <h1 className="text-5xl font-bold text-gold-soft font-[family-name:var(--font-tajawal)] mb-4">تفسير القرآن الكريم</h1>
           <p className="text-white text-lg">Quran Tafsir</p>
           <p className="text-white/60 text-sm mt-4 max-w-2xl mx-auto">
             Explore detailed interpretations and explanations of Quranic verses from renowned scholars — Tafsir Al-Muyassar.
@@ -98,7 +98,7 @@ export default function Tafsir() {
                       {surah.number}
                     </span>
                   </div>
-                  <h3 className="text-white font-bold font-[family-name:var(--font-cairo)] text-center mb-1">
+                  <h3 className="text-white font-bold font-[family-name:var(--font-tajawal)] text-center mb-1">
                     {surah.name}
                   </h3>
                   <p className="text-sm text-white/50 mb-4">{surah.englishName}</p>

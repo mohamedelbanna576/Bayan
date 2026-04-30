@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useAudio } from "@/context/AudioContext";
 import { Play, Pause, X, Volume2, Volume1, VolumeX, SkipForward, SkipBack } from "lucide-react";
@@ -48,7 +48,7 @@ export default function GlobalAudioPlayer() {
             <p className="text-xs text-gold-soft font-bold uppercase tracking-widest mb-1">
               {isRadio ? 'Live Radio' : 'Now Playing'}
             </p>
-            <p className="text-white font-bold font-[family-name:var(--font-cairo)] text-sm sm:text-base truncate">
+            <p className="text-white font-bold font-[family-name:var(--font-tajawal)] text-sm sm:text-base truncate">
               {currentTrack.title}
             </p>
             {currentTrack.subtitle && (

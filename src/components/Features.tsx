@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { BookOpen, Radio, Bookmark, Clock, Hash, Heart } from "lucide-react";
@@ -46,7 +46,7 @@ const features = [
     title: "Tasbeeh Counter",
     arabic: "التسبيح",
     icon: Hash,
-    description: "Digital dhikr counter with presets and daily tracking",
+    description: "Digital Bayan counter with presets and daily tracking",
     arabicDesc: "عداد أذكار رقمي مع إعدادات مسبقة وتتبع يومي",
     href: "/tasbeeh",
   },
@@ -73,16 +73,16 @@ export default function Features() {
               <Link href={feature.href} className="block group flat-card p-6 card-hover h-full">
                 <div className="flex items-center justify-between mb-4">
                   <feature.icon className="w-6 h-6 text-gold-soft" />
-                  <span className="text-lg text-gold-soft/80 font-[family-name:var(--font-cairo)] font-bold">
+                  <span className="text-lg text-gold-soft/80 font-[family-name:var(--font-tajawal)] font-bold">
                     {language === "en" ? feature.arabic : feature.title}
                   </span>
                 </div>
 
-                <h3 className={`text-xl font-bold text-white mb-2 group-hover:text-gold-soft transition-colors ${language === 'ar' ? 'font-[family-name:var(--font-cairo)]' : ''}`}>
+                <h3 className={`text-xl font-bold text-white mb-2 group-hover:text-gold-soft transition-colors ${language === 'ar' ? 'font-[family-name:var(--font-tajawal)]' : ''}`}>
                   {t(feature.title, feature.arabic)}
                 </h3>
                 
-                <p className={`text-sm text-white/60 leading-relaxed ${language === 'ar' ? 'font-[family-name:var(--font-cairo)]' : ''}`}>
+                <p className={`text-sm text-white/60 leading-relaxed ${language === 'ar' ? 'font-[family-name:var(--font-tajawal)]' : ''}`}>
                   {t(feature.description, feature.arabicDesc)}
                 </p>
               </Link>

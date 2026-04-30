@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
@@ -10,7 +10,7 @@ export default function Tasbeeh() {
   const [totalCount, setTotalCount] = useState(0);
 
   useEffect(() => {
-    const savedTotal = localStorage.getItem("dhikr_total_count");
+    const savedTotal = localStorage.getItem("Bayan_total_count");
     if (savedTotal) {
       setTotalCount(parseInt(savedTotal, 10));
     }
@@ -26,7 +26,7 @@ export default function Tasbeeh() {
     
     setTotalCount((prev) => {
       const newTotal = prev + 1;
-      localStorage.setItem("dhikr_total_count", newTotal.toString());
+      localStorage.setItem("Bayan_total_count", newTotal.toString());
       return newTotal;
     });
   };
@@ -41,7 +41,7 @@ export default function Tasbeeh() {
 
       <div className="pb-24 max-w-lg mx-auto px-4 sm:px-6 flex flex-col items-center justify-center min-h-[70vh]">
         <div className="text-center mb-12 animate-in slide-in-from-bottom-5 duration-500">
-          <h1 className="text-5xl font-bold text-gold-soft font-[family-name:var(--font-cairo)] mb-4">المِسْبَحَة الإِلِكْتِرُونِيَّة</h1>
+          <h1 className="text-5xl font-bold text-gold-soft font-[family-name:var(--font-tajawal)] mb-4">المِسْبَحَة الإِلِكْتِرُونِيَّة</h1>
           <p className="text-white text-lg">Digital Tasbeeh</p>
         </div>
 

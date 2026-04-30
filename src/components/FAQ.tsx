@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
@@ -6,10 +6,10 @@ import { useLanguage } from "@/context/LanguageContext";
 
 const faqs = [
   {
-    question: "What is the Dhikr Platform?",
-    arabicQuestion: "ما هي منصة ذِكْر؟",
-    answer: "Dhikr (ذِكْر) is a modern Islamic digital companion that brings together essential spiritual tools in one place — Quran reading with audio from 30+ reciters, 9 tafsir sources, live Islamic radio, accurate prayer times, a digital tasbeeh counter, and daily azkar (morning & evening remembrances).",
-    arabicAnswer: "ذِكْر هي رفيق إسلامي رقمي حديث يجمع الأدوات الروحية الأساسية في مكان واحد — قراءة القرآن مع تلاوات من أكثر من 30 قارئًا، 9 مصادر للتفسير، إذاعة إسلامية مباشرة، مواقيت صلاة دقيقة، عداد تسبيح رقمي، وأذكار يومية (أذكار الصباح والمساء).",
+    question: "What is the Bayan Platform?",
+    arabicQuestion: "ما هي منصة بيان؟",
+    answer: "Bayan (بيان) is a modern Islamic digital companion that brings together essential spiritual tools in one place — Quran reading with audio from 30+ reciters, 9 tafsir sources, live Islamic radio, accurate prayer times, a digital tasbeeh counter, and daily azkar (morning & evening remembrances).",
+    arabicAnswer: "بيان هي رفيق إسلامي رقمي حديث يجمع الأدوات الروحية الأساسية في مكان واحد — قراءة القرآن مع تلاوات من أكثر من 30 قارئًا، 9 مصادر للتفسير، إذاعة إسلامية مباشرة، مواقيت صلاة دقيقة، عداد تسبيح رقمي، وأذكار يومية (أذكار الصباح والمساء).",
   },
   {
     question: "How many reciters are available?",
@@ -32,14 +32,14 @@ const faqs = [
   {
     question: "What is the Tasbeeh Counter?",
     arabicQuestion: "ما هو عداد التسبيح؟",
-    answer: "The Tasbeeh Counter is a digital dhikr tool with 9 preset adhkar (SubhanAllah, Alhamdulillah, Allahu Akbar, etc.). It features a circular progress ring, customizable count targets (33, 100, 500, 1000), round tracking, daily total that persists across sessions, and keyboard support (Space/Enter).",
+    answer: "The Tasbeeh Counter is a digital Bayan tool with 9 preset adhkar (SubhanAllah, Alhamdulillah, Allahu Akbar, etc.). It features a circular progress ring, customizable count targets (33, 100, 500, 1000), round tracking, daily total that persists across sessions, and keyboard support (Space/Enter).",
     arabicAnswer: "عداد التسبيح هو أداة أذكار رقمية تحتوي على 9 أذكار محددة مسبقًا (سبحان الله، الحمد لله، الله أكبر، إلخ). يتميز بحلقة تقدم دائرية، وأهداف عد قابلة للتخصيص (33، 100، 500، 1000)، وتتبع الجولات، ومجموع يومي يستمر عبر الجلسات، ودعم لوحة المفاتيح (Space/Enter).",
   },
   {
     question: "Where do the Azkar come from?",
     arabicQuestion: "من أين تأتي الأذكار؟",
     answer: "Morning and evening azkar are sourced from an authenticated hadith-based API. Each zikr includes the original Arabic text, its reference, and the recommended number of repetitions. You can tap to track your progress through each zikr.",
-    arabicAnswer: "أذكار الصباح والمساء مأخوذة من واجهة برمجة تطبيقات موثوقة تعتمد على الأحاديث. يتضمن كل ذكر النص العربي الأصلي، ومصدره، وعدد مرات التكرار الموصى به. يمكنك النقر لتتبع تقدمك في كل ذكر.",
+    arabicAnswer: "أذكار الصباح والمساء مأخوذة من واجهة برمجة تطبيقات موثوقة تعتمد على الأحاديث. يتضمن كل بيان النص العربي الأصلي، ومصدره، وعدد مرات التكرار الموصى به. يمكنك النقر لتتبع تقدمك في كل بيان.",
   },
   {
     question: "Is the radio broadcast live?",
@@ -63,11 +63,11 @@ export default function FAQ() {
     <section className="py-24 bg-emerald-deep border-t border-emerald-forest">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className={`text-3xl sm:text-4xl font-semibold text-white mb-4 ${language === 'ar' ? 'font-[family-name:var(--font-cairo)]' : ''}`}>
+          <h2 className={`text-3xl sm:text-4xl font-semibold text-white mb-4 ${language === 'ar' ? 'font-[family-name:var(--font-tajawal)]' : ''}`}>
             {t("Questions & Answers", "أسئلة وأجوبة")}
           </h2>
-          <p className={`text-white/80 max-w-lg mx-auto ${language === 'ar' ? 'font-[family-name:var(--font-cairo)]' : ''}`}>
-            {t("Find answers to commonly asked questions about the Dhikr platform.", "ابحث عن إجابات للأسئلة الشائعة حول منصة ذِكْر.")}
+          <p className={`text-white/80 max-w-lg mx-auto ${language === 'ar' ? 'font-[family-name:var(--font-tajawal)]' : ''}`}>
+            {t("Find answers to commonly asked questions about the Bayan platform.", "ابحث عن إجابات للأسئلة الشائعة حول منصة بيان.")}
           </p>
         </div>
 
@@ -81,7 +81,7 @@ export default function FAQ() {
                 onClick={() => setOpenIndex(openIndex === index ? null : index)}
                 className="w-full px-6 py-5 flex items-center justify-between text-left group hover:bg-emerald-mid transition-colors"
               >
-                <span className={`text-base font-semibold transition-colors ${openIndex === index ? 'text-gold-soft' : 'text-white/90 group-hover:text-white'} ${language === 'ar' ? 'font-[family-name:var(--font-cairo)]' : ''}`}>
+                <span className={`text-base font-semibold transition-colors ${openIndex === index ? 'text-gold-soft' : 'text-white/90 group-hover:text-white'} ${language === 'ar' ? 'font-[family-name:var(--font-tajawal)]' : ''}`}>
                   {t(faq.question, faq.arabicQuestion)}
                 </span>
                 <ChevronDown className={`w-5 h-5 shrink-0 ml-4 transition-transform duration-200 ${openIndex === index ? 'rotate-180 text-gold-soft' : 'text-white/50 group-hover:text-gold-soft'}`} />
@@ -90,7 +90,7 @@ export default function FAQ() {
               <div 
                 className={`transition-all duration-300 ease-in-out origin-top ${openIndex === index ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}
               >
-                <p className={`px-6 pb-5 text-white/70 leading-relaxed text-sm ${language === 'ar' ? 'font-[family-name:var(--font-cairo)]' : ''}`}>
+                <p className={`px-6 pb-5 text-white/70 leading-relaxed text-sm ${language === 'ar' ? 'font-[family-name:var(--font-tajawal)]' : ''}`}>
                   {t(faq.answer, faq.arabicAnswer)}
                 </p>
               </div>

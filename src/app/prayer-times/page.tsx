@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
@@ -163,7 +163,7 @@ export default function PrayerTimes() {
 
       <div className="pb-24 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10 animate-in slide-in-from-bottom-5 duration-500">
-          <h1 className="text-5xl font-bold text-gold-soft font-[family-name:var(--font-cairo)] mb-4">مَوَاقِيتُ الصَّلَاة</h1>
+          <h1 className="text-5xl font-bold text-gold-soft font-[family-name:var(--font-tajawal)] mb-4">مَوَاقِيتُ الصَّلَاة</h1>
           <p className="text-white text-lg">Prayer Times</p>
         </div>
 

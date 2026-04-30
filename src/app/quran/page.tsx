@@ -44,11 +44,23 @@ export default function Quran() {
       setFiltered(surahs);
     } else {
       const q = search.toLowerCase();
+      
+      const normalizeArabic = (text: string) => {
+        return text
+          .replace(/[\u0617-\u061A\u064B-\u0652]/g, "") // Remove tashkeel
+          .replace(/[أإآ]/g, "ا") // Normalize Alef
+          .replace(/ة/g, "ه") // Normalize Teh Marbuta to Heh
+          .replace(/سورة /g, "") // Remove 'Surah '
+          .replace(/سوره /g, "");
+      };
+
+      const normalizedQuery = normalizeArabic(q);
+
       setFiltered(
         surahs.filter(
           (s) =>
             s.englishName.toLowerCase().includes(q) ||
-            s.name.includes(search) ||
+            normalizeArabic(s.name).includes(normalizedQuery) ||
             s.englishNameTranslation.toLowerCase().includes(q)
         )
       );
@@ -61,7 +73,7 @@ export default function Quran() {
 
       <div className="pb-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-gold-soft font-[family-name:var(--font-cairo)] mb-4">القرآن الكريم</h1>
+          <h1 className="text-5xl font-bold text-gold-soft font-[family-name:var(--font-tajawal)] mb-4">القرآن الكريم</h1>
           <p className="text-white text-lg">The Holy Quran</p>
           <p className="text-white/60 text-sm mt-4 max-w-2xl mx-auto">
             Read and listen to the Holy Quran — all 114 surahs with full Arabic text and audio recitations.

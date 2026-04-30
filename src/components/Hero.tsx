@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { ArrowDown, BookOpen, Clock } from "lucide-react";
@@ -12,16 +12,16 @@ export default function Hero() {
       <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
         <div className="mb-6">
           <h1
-            className="text-7xl sm:text-8xl lg:text-9xl font-bold text-gold mb-4 font-[family-name:var(--font-cairo)]"
+            className="text-7xl sm:text-8xl lg:text-9xl font-bold text-gold mb-4 font-[family-name:var(--font-tajawal)]"
             style={{ letterSpacing: "0.15em" }}
           >
-            ذِكْر
+            بيان
           </h1>
         </div>
 
         <div className="mb-4">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-white">
-            {t("Dhikr", "ذكر")}
+            {t("Bayan", "بيان")}
           </h2>
         </div>
 

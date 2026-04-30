@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
-import { Inter, Outfit, Cairo, Amiri } from "next/font/google";
+﻿import type { Metadata } from "next";
+import { Inter, Outfit, Tajawal, Amiri } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { AudioProvider } from "@/context/AudioContext";
@@ -17,8 +17,8 @@ const outfit = Outfit({
   weight: ["400", "500", "600", "700", "800", "900"],
 });
 
-const cairo = Cairo({
-  variable: "--font-cairo",
+const tajawal = Tajawal({
+  variable: "--font-tajawal",
   subsets: ["arabic", "latin"],
   weight: ["400", "600", "700", "800"],
 });
@@ -30,7 +30,7 @@ const amiri = Amiri({
 });
 
 export const metadata: Metadata = {
-  title: "Dhikr | ذِكْر",
+  title: "Bayan | بيان",
   description: "A modern Islamic digital platform featuring Quran recitations, Islamic Radio, Tafsir, and Prayer Times",
 };
 
@@ -40,7 +40,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${outfit.variable} ${cairo.variable} ${amiri.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} ${outfit.variable} ${tajawal.variable} ${amiri.variable}`} suppressHydrationWarning>
       <body className="min-h-screen antialiased" suppressHydrationWarning>
         <LanguageProvider>
           <AudioProvider>
