@@ -44,7 +44,7 @@ export default function ShareButton() {
       <button
         onClick={handleShare}
         className="fixed bottom-8 right-8 z-50 p-4 rounded-full bg-gold-soft text-emerald-forest shadow-[0_0_20px_rgba(212,175,55,0.4)] hover:scale-110 transition-transform flex items-center gap-2 font-bold group"
-        title={t("Share the reward", "انشر الخير")}
+        title={t("Share the reward", "انشر الخير") as string}
       >
         <Share2 className="w-6 h-6" />
         <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-300 ease-in-out whitespace-nowrap">
