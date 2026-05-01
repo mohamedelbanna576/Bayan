@@ -33,6 +33,10 @@ const amiri = Amiri({
 export const metadata: Metadata = {
   title: "Bayan | بيان",
   description: "A modern Islamic digital platform featuring Quran recitations, Islamic Radio, Tafsir, and Prayer Times",
+  icons: {
+    icon: "/assets/logo.png",
+    apple: "/assets/logo.png",
+  },
 };
 
 export default function RootLayout({
