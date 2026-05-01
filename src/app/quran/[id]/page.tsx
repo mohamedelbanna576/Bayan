@@ -179,7 +179,7 @@ export default function SurahPage({ params }: { params: Promise<{ id: string }> 
 
         {/* Surah Header */}
         <div className="flat-card p-8 text-center mb-6">
-          <h1 className="text-6xl font-black text-gold-soft font-[family-name:var(--font-cairo)] mb-3 tracking-tight">{surah.name}</h1>
+          <h1 className="text-6xl font-bold text-gold-soft font-[family-name:var(--font-amiri)] mb-3">{surah.name}</h1>
           <p className="text-white text-lg mb-1">{surah.englishName}</p>
           <p className="text-white/50 text-sm">{surah.englishNameTranslation} · {surah.revelationType} · {surah.numberOfAyahs} Ayahs</p>
         </div>
@@ -197,7 +197,7 @@ export default function SurahPage({ params }: { params: Promise<{ id: string }> 
                 className="w-full bg-emerald-forest border border-gold-soft/20 text-white rounded-lg px-4 py-3 flex items-center justify-between hover:border-gold-soft/40 transition-colors"
               >
                 <div className="flex items-center gap-2 truncate">
-                  <span className="text-gold-soft text-sm font-[family-name:var(--font-tajawal)] truncate font-bold text-lg">
+                  <span className="text-gold-soft text-sm font-[family-name:var(--font-amiri)] truncate font-bold text-lg">
                     {currentReciter ? currentReciter.name : "مشاري العفاسي"}
                   </span>
                   <span className="text-white/40">·</span>
@@ -219,7 +219,7 @@ export default function SurahPage({ params }: { params: Promise<{ id: string }> 
                       }`}
                     >
                       <span className={`truncate ${selectedReciter === reciter.identifier ? "text-gold-soft" : "text-white/80"}`}>{reciter.englishName}</span>
-                      <span className="text-gold-soft/70 font-[family-name:var(--font-tajawal)] text-sm shrink-0 font-bold">{reciter.name}</span>
+                      <span className="text-gold-soft/70 font-[family-name:var(--font-amiri)] text-sm shrink-0 font-bold">{reciter.name}</span>
                     </button>
                   ))}
                 </div>
@@ -249,7 +249,7 @@ export default function SurahPage({ params }: { params: Promise<{ id: string }> 
         {/* Bismillah */}
         {surah.number !== 1 && surah.number !== 9 && (
           <div className="text-center mb-6 py-6 flat-card">
-            <p className="text-4xl text-gold-soft font-[family-name:var(--font-tajawal)] leading-relaxed">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
+            <p className="text-4xl text-gold-soft font-[family-name:var(--font-amiri)] leading-relaxed">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
           </div>
         )}
 

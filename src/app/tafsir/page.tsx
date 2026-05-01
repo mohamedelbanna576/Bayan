@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
@@ -98,7 +98,7 @@ export default function Tafsir() {
                       {surah.number}
                     </span>
                   </div>
-                  <h3 className="text-white font-bold font-[family-name:var(--font-tajawal)] text-center mb-1">
+                  <h3 className="text-white font-bold font-[family-name:var(--font-amiri)] text-center text-3xl mb-1">
                     {surah.name}
                   </h3>
                   <p className="text-sm text-white/50 mb-4">{surah.englishName}</p>
