@@ -3,7 +3,11 @@ import { BookOpen, ArrowRight, Radio, Sparkles, BookMarked } from "lucide-react"
 import Image from "next/image";
 import LandingPrayerTimes from "@/components/LandingPrayerTimes";
 
+import { getAyahOfTheDay } from "@/data/ayahs";
+
 export default function Home() {
+  const ayah = getAyahOfTheDay();
+
   return (
     <main className="min-h-screen bg-ed-beige selection:bg-ed-gold/20">
 
@@ -126,13 +130,13 @@ export default function Home() {
                 </h3>
 
                 <p className="text-2xl md:text-3xl font-[family-name:var(--font-amiri)] text-ed-green leading-[2.2] mb-6" dir="rtl">
-                  فَاذْكُرُونِي أَذْكُرْكُمْ وَاشْكُرُوا لِي وَلَا تَكْفُرُونِ
+                  {ayah.arabic}
                 </p>
 
                 <p className="text-lg text-ed-text-secondary leading-[1.9] italic max-w-sm mx-auto">
-                  &ldquo;So remember Me; I will remember you. And be grateful to Me and do not deny Me.&rdquo;
+                  &ldquo;{ayah.english}&rdquo;
                 </p>
-                <p className="text-[11px] text-ed-gold mt-4 font-semibold uppercase tracking-widest">Al-Baqarah 2:152</p>
+                <p className="text-[11px] text-ed-gold mt-4 font-semibold uppercase tracking-widest">{ayah.reference}</p>
               </div>
             </div>
           </section>
