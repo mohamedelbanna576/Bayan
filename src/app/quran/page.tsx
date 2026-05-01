@@ -74,7 +74,7 @@ export default function Quran() {
 
       <div className="pb-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-gold-soft font-[family-name:var(--font-tajawal)] mb-4">القرآن الكريم</h1>
+          <h1 className="text-6xl font-black text-gold-soft font-[family-name:var(--font-cairo)] mb-3 tracking-tight">القرآن الكريم</h1>
           <p className="text-white text-lg">The Holy Quran</p>
           <p className="text-white/60 text-sm mt-4 max-w-2xl mx-auto">
             Read and listen to the Holy Quran — all 114 surahs with full Arabic text and audio recitations.
@@ -111,7 +111,7 @@ export default function Quran() {
                       {surah.number}
                     </span>
                   </div>
-                  <h3 className="text-white font-bold font-[family-name:var(--font-tajawal)] text-center text-3xl mb-1">
+                  <h3 className="text-white font-black font-[family-name:var(--font-cairo)] text-center text-3xl mb-1 tracking-wide">
                     {surah.name}
                   </h3>
                   <p className="text-sm text-white/50 mb-1">{surah.englishName}</p>

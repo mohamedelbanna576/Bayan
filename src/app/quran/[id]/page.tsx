@@ -179,7 +179,7 @@ export default function SurahPage({ params }: { params: Promise<{ id: string }> 
 
         {/* Surah Header */}
         <div className="flat-card p-8 text-center mb-6">
-          <h1 className="text-6xl font-bold text-gold-soft font-[family-name:var(--font-tajawal)] mb-3">{surah.name}</h1>
+          <h1 className="text-6xl font-black text-gold-soft font-[family-name:var(--font-cairo)] mb-3 tracking-tight">{surah.name}</h1>
           <p className="text-white text-lg mb-1">{surah.englishName}</p>
           <p className="text-white/50 text-sm">{surah.englishNameTranslation} · {surah.revelationType} · {surah.numberOfAyahs} Ayahs</p>
         </div>
