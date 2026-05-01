@@ -19,13 +19,8 @@ export default function ShareButton() {
     };
 
     if (navigator.share) {
-      try {
-        await navigator.share(shareData);
-      } catch (err) {
-        console.log("Error sharing:", err);
-      }
+      try { await navigator.share(shareData); } catch (err) { console.log("Error sharing:", err); }
     } else {
-      // Fallback: Copy to clipboard
       navigator.clipboard.writeText(window.location.origin);
       setShowToast(true);
       setTimeout(() => setShowToast(false), 3000);
@@ -36,19 +31,15 @@ export default function ShareButton() {
     <>
       <button
         onClick={handleShare}
-        className="fixed bottom-8 right-8 z-50 p-4 rounded-full bg-gold-soft text-emerald-forest shadow-[0_0_20px_rgba(212,175,55,0.4)] hover:scale-110 transition-transform flex items-center gap-2 font-bold group"
+        className="fixed bottom-8 right-8 z-50 w-14 h-14 rounded-full flex items-center justify-center bg-white text-ed-green border border-ed-green/10 shadow-2xl hover:bg-ed-beige transition-all hover:scale-105"
         title={t("Share the reward", "انشر الخير") as string}
       >
-        <Share2 className="w-6 h-6" />
-        <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-300 ease-in-out whitespace-nowrap">
-          {t("Share Reward", "انشر الخير")}
-        </span>
+        <Share2 className="w-5 h-5" />
       </button>
 
-      {/* Toast Notification */}
       {showToast && (
-        <div className="fixed bottom-24 right-8 z-50 glass-card px-6 py-3 border border-gold-soft/50 text-white flex items-center gap-2 animate-in slide-in-from-bottom-5">
-          <LinkIcon className="w-4 h-4 text-gold-soft" />
+        <div className="fixed bottom-28 right-8 z-50 bg-white border border-ed-green/10 text-ed-green px-6 py-4 text-sm font-medium flex items-center gap-3 shadow-2xl animate-fade-up rounded-sm">
+          <LinkIcon className="w-4 h-4 text-ed-gold" />
           <span>{t("Link copied to clipboard!", "تم نسخ الرابط!")}</span>
         </div>
       )}

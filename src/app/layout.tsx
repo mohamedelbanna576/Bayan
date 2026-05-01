@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Outfit, Tajawal, Amiri, Cairo } from "next/font/google";
+import { Inter, Outfit, Tajawal, Amiri, Cairo, Scheherazade_New } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { AudioProvider } from "@/context/AudioContext";
@@ -35,6 +35,12 @@ const cairo = Cairo({
   weight: ["400", "600", "700", "800", "900"],
 });
 
+const scheherazade = Scheherazade_New({
+  variable: "--font-scheherazade",
+  subsets: ["arabic", "latin"],
+  weight: ["400", "700"],
+});
+
 export const metadata: Metadata = {
   title: "Bayan | بيان",
   description: "A modern Islamic digital platform featuring Quran recitations, Islamic Radio, Tafsir, and Prayer Times",
@@ -50,7 +56,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${outfit.variable} ${tajawal.variable} ${amiri.variable} ${cairo.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} ${outfit.variable} ${tajawal.variable} ${amiri.variable} ${cairo.variable} ${scheherazade.variable}`} suppressHydrationWarning>
       <body className="min-h-screen antialiased" suppressHydrationWarning>
         <LanguageProvider>
           <AudioProvider>

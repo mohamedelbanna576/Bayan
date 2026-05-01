@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useAudio } from "@/context/AudioContext";
 import { Play, Pause, X, Volume2, Volume1, VolumeX, SkipForward, SkipBack } from "lucide-react";
@@ -6,127 +6,88 @@ import { Play, Pause, X, Volume2, Volume1, VolumeX, SkipForward, SkipBack } from
 export default function GlobalAudioPlayer() {
   const { currentTrack, isPlaying, togglePlayPause, stopAudio, volume, setVolume, playlist, currentIndex, playPlaylist } = useAudio();
 
-  // Hide when not playing or no track
   if (!currentTrack) return null;
 
   const isRadio = currentTrack.type === "radio";
   const hasPlaylist = playlist.length > 1;
 
-  const handleNext = () => {
-    if (currentIndex < playlist.length - 1) {
-      playPlaylist(playlist, currentIndex + 1);
-    }
-  };
-
-  const handlePrev = () => {
-    if (currentIndex > 0) {
-      playPlaylist(playlist, currentIndex - 1);
-    }
-  };
+  const handleNext = () => { if (currentIndex < playlist.length - 1) playPlaylist(playlist, currentIndex + 1); };
+  const handlePrev = () => { if (currentIndex > 0) playPlaylist(playlist, currentIndex - 1); };
 
   return (
-    <div className="animate-in zoom-in-95 fade-in duration-300 mb-8">
-      <div className="glass-card border border-gold-soft/50 bg-emerald-forest/80 p-4 sm:p-6 rounded-2xl shadow-[0_10px_40px_rgba(212,175,55,0.15)] flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
-        
+    <div className="mb-8">
+      <div className="bg-ed-green p-4 sm:p-5 flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
         {/* Track Info */}
         <div className="flex items-center gap-4 flex-1 w-full min-w-0">
-          <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gold-soft/20 flex items-center justify-center shrink-0 ${isPlaying && isRadio ? 'animate-pulse' : ''}`}>
+          <div className={`w-10 h-10 bg-ed-green-soft/30 flex items-center justify-center flex-shrink-0 ${isPlaying && isRadio ? "animate-pulse" : ""}`}>
             {isPlaying ? (
-              <div className="flex gap-1 items-end h-4">
-                <span className="w-1 h-3 bg-gold-soft animate-[bounce_1s_infinite] origin-bottom"></span>
-                <span className="w-1 h-4 bg-gold-soft animate-[bounce_1.2s_infinite] origin-bottom"></span>
-                <span className="w-1 h-2 bg-gold-soft animate-[bounce_0.8s_infinite] origin-bottom"></span>
+              <div className="flex gap-0.5 items-end h-3">
+                <span className="w-0.5 h-2 bg-ed-gold animate-[bounce_1s_infinite]"></span>
+                <span className="w-0.5 h-3 bg-ed-gold animate-[bounce_1.2s_infinite]"></span>
+                <span className="w-0.5 h-1.5 bg-ed-gold animate-[bounce_0.8s_infinite]"></span>
               </div>
             ) : (
-              <Pause className="w-6 h-6 text-gold-soft" />
+              <Pause className="w-4 h-4 text-ed-gold" />
             )}
           </div>
-          
+
           <div className="flex-1 min-w-0">
-            <p className="text-xs text-gold-soft font-bold uppercase tracking-widest mb-1">
-              {isRadio ? 'Live Radio' : 'Now Playing'}
+            <p className="text-[10px] text-ed-gold uppercase tracking-[0.2em] mb-0.5 font-medium">
+              {isRadio ? "Live Radio" : "Now Playing"}
             </p>
-            <p className="text-white font-bold font-[family-name:var(--font-tajawal)] text-sm sm:text-base truncate">
+            <p className="text-sm text-ed-beige-warm font-[family-name:var(--font-tajawal)] truncate">
               {currentTrack.title}
             </p>
             {currentTrack.subtitle && (
-              <p className="text-white/60 text-xs truncate font-[family-name:var(--font-sans)]">
-                {currentTrack.subtitle}
-              </p>
+              <p className="text-xs text-ed-beige-warm/50 truncate">{currentTrack.subtitle}</p>
             )}
           </div>
         </div>
 
         {/* Controls */}
-        <div className="flex items-center gap-4 sm:gap-6 w-full sm:w-auto justify-center">
+        <div className="flex items-center gap-4 sm:gap-5 w-full sm:w-auto justify-center">
           {hasPlaylist && (
-            <button 
-              onClick={handlePrev} 
-              disabled={currentIndex === 0}
-              className="text-white/60 hover:text-white disabled:opacity-30 transition-colors"
-            >
-              <SkipBack className="w-5 h-5 sm:w-6 sm:h-6" />
+            <button onClick={handlePrev} disabled={currentIndex === 0} className="text-ed-beige-warm/50 hover:text-ed-beige-warm disabled:opacity-30 transition-colors">
+              <SkipBack className="w-4 h-4" />
             </button>
           )}
 
           <button
             onClick={togglePlayPause}
-            className="w-12 h-12 flex items-center justify-center shadow-lg transform hover:scale-105 transition-all active:scale-95"
-            style={{ 
-              backgroundColor: 'var(--gold-soft)', 
-              color: 'var(--emerald-forest)',
-              borderRadius: '50%',
-              border: 'none'
-            }}
+            className="w-10 h-10 flex items-center justify-center bg-ed-gold text-ed-green-dark hover:brightness-105 transition-all"
           >
-            {isPlaying ? <Pause className="w-5 h-5 fill-current" /> : <Play className="w-5 h-5 ml-1 fill-current" />}
+            {isPlaying ? <Pause className="w-4 h-4 fill-current" /> : <Play className="w-4 h-4 ml-0.5 fill-current" />}
           </button>
 
           {hasPlaylist && (
-            <button 
-              onClick={handleNext} 
-              disabled={currentIndex === playlist.length - 1}
-              className="text-white/60 hover:text-white disabled:opacity-30 transition-colors"
-            >
-              <SkipForward className="w-5 h-5 sm:w-6 sm:h-6" />
+            <button onClick={handleNext} disabled={currentIndex === playlist.length - 1} className="text-ed-beige-warm/50 hover:text-ed-beige-warm disabled:opacity-30 transition-colors">
+              <SkipForward className="w-4 h-4" />
             </button>
           )}
         </div>
 
         {/* Volume & Close */}
-        <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto justify-end">
-          <div className="flex items-center gap-2 group relative">
-            <button 
-              onClick={() => setVolume(volume === 0 ? 0.8 : 0)} 
-              className="text-white/60 hover:text-gold-soft transition-colors p-2"
-            >
-              {volume === 0 ? <VolumeX className="w-5 h-5" /> : volume < 0.5 ? <Volume1 className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+        <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
+          <div className="flex items-center gap-2">
+            <button onClick={() => setVolume(volume === 0 ? 0.8 : 0)} className="text-ed-beige-warm/50 hover:text-ed-gold transition-colors p-1">
+              {volume === 0 ? <VolumeX className="w-4 h-4" /> : volume < 0.5 ? <Volume1 className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
             </button>
-            <div className="w-24 hidden sm:block">
+            <div className="w-20 hidden sm:block">
               <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.01"
-                value={volume}
+                type="range" min="0" max="1" step="0.01" value={volume}
                 onChange={(e) => setVolume(parseFloat(e.target.value))}
-                className="w-full h-1.5 rounded-full appearance-none cursor-pointer"
+                className="w-full h-1 rounded-full appearance-none cursor-pointer"
                 style={{
-                  background: `linear-gradient(to right, var(--gold-soft) 0%, var(--gold-soft) ${volume * 100}%, rgba(255,255,255,0.15) ${volume * 100}%, rgba(255,255,255,0.15) 100%)`,
+                  background: `linear-gradient(to right, var(--gold) 0%, var(--gold) ${volume * 100}%, rgba(255,255,255,0.15) ${volume * 100}%, rgba(255,255,255,0.15) 100%)`,
                 }}
               />
             </div>
           </div>
 
-          <button
-            onClick={stopAudio}
-            className="text-white/40 hover:text-red-400 hover:bg-red-500/10 p-2 rounded-full transition-colors ml-2"
-            title="Stop & Close"
-          >
-            <X className="w-5 h-5" />
+          <button onClick={stopAudio} className="text-ed-beige-warm/30 hover:text-red-400 p-1.5 transition-colors ml-2" title="Stop & Close">
+            <X className="w-4 h-4" />
           </button>
         </div>
-        
       </div>
     </div>
   );

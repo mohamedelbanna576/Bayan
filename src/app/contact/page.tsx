@@ -9,45 +9,69 @@ export default function ContactPage() {
   const { language, t } = useLanguage();
 
   return (
-    <main className="min-h-screen bg-emerald-forest pt-24 flex flex-col">
+    <main className="min-h-screen bg-[#F4F0E6] pt-20 flex flex-col">
       <Navbar />
 
-      <div className="flex-grow max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16 w-full">
-        <div className="glass-card p-8 md:p-12 text-center animate-in fade-in duration-700">
-          <h1 className={`text-4xl font-bold text-gold-soft mb-8 ${language === 'ar' ? 'font-[family-name:var(--font-tajawal)]' : ''}`}>
-            {t("Contact Us", "اتصل بنا")}
-          </h1>
-          
-          <div className={`space-y-8 text-white/80 text-lg ${language === 'ar' ? 'font-[family-name:var(--font-tajawal)]' : ''}`}>
-            <p>
-              {t(
-                "If you have any questions, suggestions, or would like to report an issue, please feel free to reach out to us. Your feedback helps us improve the platform.",
-                "إذا كان لديك أي أسئلة، اقتراحات، أو ترغب في الإبلاغ عن مشكلة، فلا تتردد في التواصل معنا. ملاحظاتك تساعدنا على تحسين المنصة."
-              )}
-            </p>
+      <div className="flex-grow max-w-3xl mx-auto px-6 lg:px-10 pt-12 pb-24 w-full">
+        <h1
+          className={`text-4xl md:text-5xl text-[#3B4A3F] mb-4 ${language === 'ar' ? 'font-[family-name:var(--font-tajawal)]' : ''}`}
+          style={{ fontFamily: language === 'ar' ? undefined : 'Georgia, serif' }}
+        >
+          {t("Contact Us", "اتصل بنا")}
+        </h1>
+        <div className="h-px bg-[#3B4A3F]/8 mb-10"></div>
 
-            <div className="flex flex-col gap-6 mt-10">
-              <a href="mailto:mohamedelbanaa151@gmail.com" className="flex items-center justify-center gap-4 p-6 rounded-xl bg-emerald-deep border border-white/10 hover:border-gold-soft transition-colors group">
-                <div className="w-12 h-12 rounded-full bg-emerald-mid flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <Mail className="w-6 h-6 text-gold-soft" />
-                </div>
-                <div className="text-left" dir="ltr">
-                  <p className="text-sm text-white/50">{t("Email", "البريد الإلكتروني")}</p>
-                  <p className="text-xl font-medium text-white">mohamedelbanaa151@gmail.com</p>
-                </div>
-              </a>
+        <div className={`text-[#5A6B5D] text-base leading-[1.9] mb-12 ${language === 'ar' ? 'font-[family-name:var(--font-tajawal)]' : ''}`}>
+          <p>
+            {t(
+              "If you have any questions, suggestions, or would like to report an issue, please feel free to reach out to us. Your feedback helps us improve the platform.",
+              "إذا كان لديك أي أسئلة، اقتراحات، أو ترغب في الإبلاغ عن مشكلة، فلا تتردد في التواصل معنا. ملاحظاتك تساعدنا على تحسين المنصة."
+            )}
+          </p>
+        </div>
 
-              <a href="https://wa.me/201035437122" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-4 p-6 rounded-xl bg-emerald-deep border border-white/10 hover:border-gold-soft transition-colors group">
-                <div className="w-12 h-12 rounded-full bg-emerald-mid flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <Phone className="w-6 h-6 text-gold-soft" />
-                </div>
-                <div className="text-left" dir="ltr">
-                  <p className="text-sm text-white/50">{t("Phone / WhatsApp", "الهاتف / واتساب")}</p>
-                  <p className="text-xl font-medium text-white">+20 103 543 7122</p>
-                </div>
-              </a>
+        <div className="space-y-4">
+          <a
+            href="mailto:mohamedelbanaa151@gmail.com"
+            className="flex items-center gap-5 p-6 bg-white border border-[#3B4A3F]/5 hover:border-[#3B4A3F]/15 transition-colors group"
+          >
+            <div className="w-12 h-12 bg-[#F4F0E6] flex items-center justify-center flex-shrink-0">
+              <Mail className="w-5 h-5 text-[#5A6B5D]" />
             </div>
-          </div>
+            <div dir="ltr">
+              <p className="text-[10px] text-[#8C9886] uppercase tracking-[0.2em] mb-1.5 font-medium">
+                {t("Email", "البريد الإلكتروني")}
+              </p>
+              <p className="text-base text-[#3B4A3F] font-medium">mohamedelbanaa151@gmail.com</p>
+            </div>
+          </a>
+
+          <a
+            href="https://wa.me/201035437122"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-5 p-6 bg-white border border-[#3B4A3F]/5 hover:border-[#3B4A3F]/15 transition-colors group"
+          >
+            <div className="w-12 h-12 bg-[#F4F0E6] flex items-center justify-center flex-shrink-0">
+              <Phone className="w-5 h-5 text-[#5A6B5D]" />
+            </div>
+            <div dir="ltr">
+              <p className="text-[10px] text-[#8C9886] uppercase tracking-[0.2em] mb-1.5 font-medium">
+                {t("Phone / WhatsApp", "الهاتف / واتساب")}
+              </p>
+              <p className="text-base text-[#3B4A3F] font-medium">+20 103 543 7122</p>
+            </div>
+          </a>
+        </div>
+
+        {/* Sadaqah Jariyah note */}
+        <div className="mt-16 pt-10 border-t border-[#3B4A3F]/8">
+          <p className="text-sm text-[#8C9886] leading-relaxed text-center italic" style={{ fontFamily: 'Georgia, serif' }}>
+            {t(
+              "This platform is a Sadaqah Jariyah project. Share it with others to earn ongoing reward.",
+              "هذه المنصة مشروع صدقة جارية. شاركها مع الآخرين لتكسب أجراً مستمراً."
+            )}
+          </p>
         </div>
       </div>
 

@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Search, BookOpen, Loader2 } from "lucide-react";
+import { Search, Loader2, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 interface Surah {
@@ -38,24 +38,17 @@ export default function Quran() {
   }, []);
 
   const filtered = useMemo(() => {
-    if (!search.trim()) {
-      return surahs;
-    }
-
+    if (!search.trim()) return surahs;
     const q = search.toLowerCase();
-      
-    const normalizeArabic = (text: string) => {
-      return text
-        .replace(/[\u064B-\u065F\u0670]/g, "") // Remove ALL Arabic diacritics
-        .replace(/[أإآٱ]/g, "ا") // Normalize all types of Alef
-        .replace(/ة/g, "ه") // Normalize Teh Marbuta to Heh
-        .replace(/سورة /g, "") // Remove 'Surah '
+    const normalizeArabic = (text: string) =>
+      text
+        .replace(/[\u064B-\u065F\u0670]/g, "")
+        .replace(/[أإآٱ]/g, "ا")
+        .replace(/ة/g, "ه")
+        .replace(/سورة /g, "")
         .replace(/سوره /g, "")
         .trim();
-    };
-
     const normalizedQuery = normalizeArabic(q);
-
     return surahs.filter(
       (s) =>
         s.englishName.toLowerCase().includes(q) ||
@@ -65,66 +58,75 @@ export default function Quran() {
   }, [search, surahs]);
 
   return (
-    <main className="min-h-screen bg-emerald-forest pt-24">
+    <main className="min-h-screen bg-ed-beige pt-20">
       <Navbar />
 
-      <div className="pb-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-gold-soft font-[family-name:var(--font-tajawal)] mb-4">القرآن الكريم</h1>
-          <p className="text-white text-lg">The Holy Quran</p>
-          <p className="text-white/60 text-sm mt-4 max-w-2xl mx-auto">
-            Read and listen to the Holy Quran — all 114 surahs with full Arabic text and audio recitations.
-          </p>
-        </div>
+      {/* Editorial Header */}
+      <div className="max-w-6xl mx-auto px-6 lg:px-10 pt-12 pb-6">
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-12">
+          <div>
+            <h1 className="text-5xl md:text-6xl font-[family-name:var(--font-tajawal)] text-ed-green font-bold mb-3">
+              القرآن الكريم
+            </h1>
+            <p className="text-sm text-ed-text-muted tracking-wide">
+              The Holy Quran — 114 Surahs with full Arabic text and audio recitations
+            </p>
+          </div>
 
-        {/* Search */}
-        <div className="flat-card p-6 mb-8">
-          <h2 className="text-white font-bold mb-4">Search Surahs</h2>
-          <div className="relative">
-            <Search className="w-5 h-5 text-white/50 absolute left-4 top-1/2 -translate-y-1/2" />
+          {/* Search */}
+          <div className="relative w-full lg:w-80">
+            <Search className="w-4 h-4 text-ed-text-muted absolute left-4 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by surah name..."
-              className="w-full bg-emerald-forest border border-gold-soft/20 text-white rounded-lg pl-12 pr-4 py-3 focus:outline-none focus:border-gold-soft transition-colors"
+              placeholder="Search surahs..."
+              className="w-full bg-white border border-ed-green/10 text-ed-text rounded-none pl-11 pr-4 py-3 text-sm focus:outline-none focus:border-ed-green/30 transition-colors placeholder:text-ed-text-muted"
             />
           </div>
         </div>
 
+        <div className="h-px bg-ed-green/8 mb-10"></div>
+      </div>
+
+      {/* Surah List */}
+      <div className="max-w-6xl mx-auto px-6 lg:px-10 pb-24">
         {loading ? (
-          <div className="flex justify-center items-center py-24">
-            <Loader2 className="w-12 h-12 text-gold-soft animate-spin" />
+          <div className="flex justify-center items-center py-32">
+            <Loader2 className="w-8 h-8 text-ed-green-soft animate-spin" />
           </div>
         ) : filtered.length === 0 ? (
-          <div className="flat-card p-8 text-center text-white/60">
-            No surahs found. Try another Arabic or English name.
+          <div className="text-center py-24 text-ed-text-muted text-sm">
+            No surahs found. Try another name.
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {filtered.map((surah) => (
-              <Link key={surah.number} href={`/quran/${surah.number}`} className="block">
-                <div className="flat-card p-6 flex flex-col items-center card-hover h-full">
-                  <div className="mb-6 mt-4 relative">
-                    <BookOpen className="w-12 h-12 text-gold-soft" />
-                    <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-emerald-forest border border-gold-soft text-gold-soft flex items-center justify-center text-xs font-bold">
+          <div className="space-y-0">
+            {filtered.map((surah, index) => (
+              <Link key={surah.number} href={`/quran/${surah.number}`} className="block group">
+                <div className={`flex items-center justify-between py-5 px-4 transition-colors hover:bg-white ${index > 0 ? 'border-t border-ed-green/5' : ''}`}>
+                  {/* Left: Number + Names */}
+                  <div className="flex items-center gap-6">
+                    <span className="w-10 text-right text-xs text-ed-text-muted font-medium tabular-nums">
                       {surah.number}
                     </span>
-                  </div>
-                  <h3 className="text-white font-bold font-[family-name:var(--font-amiri)] text-center text-3xl mb-1">
-                    {surah.name}
-                  </h3>
-                  <p className="text-sm text-white/50 mb-1">{surah.englishName}</p>
-                  <p className="text-xs text-white/40 mb-4">{surah.englishNameTranslation}</p>
-
-                  <div className="bg-white/10 px-3 py-1 rounded text-xs text-white/70 mb-4 flex items-center gap-2">
-                    <span className={`w-2 h-2 rounded-full ${surah.revelationType === "Meccan" ? "bg-emerald-400" : "bg-blue-400"}`}></span>
-                    {surah.revelationType}
+                    <div>
+                      <h3 className="text-base font-[family-name:var(--font-amiri)] text-ed-green mb-0.5">
+                        {surah.name}
+                      </h3>
+                      <p className="text-xs text-ed-text-muted">
+                        {surah.englishName} · {surah.englishNameTranslation}
+                      </p>
+                    </div>
                   </div>
 
-                  <div className="w-full flex items-center justify-between">
-                    <span className="text-xs text-white/50">Verses:</span>
-                    <span className="text-xs text-gold-soft font-bold">{surah.numberOfAyahs}</span>
+                  {/* Right: Meta */}
+                  <div className="flex items-center gap-6">
+                    <div className="hidden sm:flex items-center gap-2">
+                      <span className={`w-1.5 h-1.5 rounded-full ${surah.revelationType === "Meccan" ? "bg-ed-green-soft" : "bg-ed-gold"}`}></span>
+                      <span className="text-[10px] text-ed-text-muted uppercase tracking-wider">{surah.revelationType}</span>
+                    </div>
+                    <span className="text-xs text-ed-text-muted tabular-nums">{surah.numberOfAyahs} verses</span>
+                    <ArrowRight className="w-3.5 h-3.5 text-ed-text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
                   </div>
                 </div>
               </Link>

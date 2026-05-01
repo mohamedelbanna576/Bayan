@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
@@ -15,25 +15,29 @@ type Zikr = {
 const morningAzkar: Zikr[] = [
   { id: 1, text: "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ.", count: 1, virtue: "من قالها حين يصبح حفظ من الشياطين حتى يمسي." },
   { id: 2, text: "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ.", count: 100, virtue: "حُطَّتْ خَطَايَاهُ وَإِنْ كَانَتْ مِثْلَ زَبَدِ الْبَحْرِ." },
-  { id: 3, text: "اللَّهُمَّ بِكَ أَصْبَحْنَا، وَبِكَ أَمْسَيْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ وَإِلَيْكَ النُّشُورُ.", count: 1 }
+  { id: 3, text: "اللَّهُمَّ بِكَ أَصْبَحْنَا، وَبِكَ أَمْسَيْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ وَإِلَيْكَ النُّشُورُ.", count: 1 },
+  { id: 10, text: "اللَّهُمَّ عَافِنِي فِي بَدَنِي، اللَّهُمَّ عَافِنِي فِي سَمْعِي، اللَّهُمَّ عَافِنِي فِي بَصَرِي، لَا إِلَهَ إِلَّا أَنْتَ.", count: 3 },
+  { id: 11, text: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْكُفْرِ وَالْفَقْرِ، وَأَعُوذُ بِكَ مِنْ عَذَابِ الْقَبْرِ، لَا إِلَهَ إِلَّا أَنْتَ.", count: 3 },
+  { id: 12, text: "حَسْبِيَ اللَّهُ لَا إِلَهَ إِلَّا هُوَ عَلَيْهِ تَوَكَّلْتُ وَهُوَ رَبُّ الْعَرْشِ الْعَظِيمِ.", count: 7, virtue: "من قالها سبع مرات كفاه الله ما أهمه." },
 ];
 
 const eveningAzkar: Zikr[] = [
   { id: 4, text: "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ.", count: 1 },
   { id: 5, text: "اللَّهُمَّ بِكَ أَمْسَيْنَا، وَبِكَ أَصْبَحْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ وَإِلَيْكَ الْمَصِيرُ.", count: 1 },
-  { id: 6, text: "بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ.", count: 3, virtue: "من قالها ثلاثاً لم يضره شيء." }
+  { id: 6, text: "بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ.", count: 3, virtue: "من قالها ثلاثاً لم يضره شيء." },
+  { id: 13, text: "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ.", count: 3, virtue: "من قالها حين يمسي ثلاث مرات لم يضره حُمَة تلك الليلة." },
+  { id: 14, text: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ فِي الدُّنْيَا وَالْآخِرَةِ.", count: 3 },
 ];
 
 const postPrayerAzkar: Zikr[] = [
   { id: 7, text: "أَسْتَغْفِرُ اللَّهَ (ثَلَاثًا). اللَّهُمَّ أَنْتَ السَّلَامُ وَمِنْكَ السَّلَامُ، تَبَارَكْتَ يَا ذَا الْجَلَالِ وَالْإِكْرَامِ.", count: 1 },
   { id: 8, text: "سُبْحَانَ اللَّهِ، وَالْحَمْدُ لِلَّهِ، وَاللَّهُ أَكْبَرُ.", count: 33 },
-  { id: 9, text: "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ.", count: 1 }
+  { id: 9, text: "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ.", count: 1 },
+  { id: 15, text: "اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ.", count: 1, virtue: "أوصى بها النبي ﷺ معاذ بن جبل." },
 ];
 
 export default function Azkar() {
   const [activeCategory, setActiveCategory] = useState<"morning" | "evening" | "prayer">("morning");
-  
-  // Track counts: { [zikrId]: currentCount }
   const [counts, setCounts] = useState<Record<number, number>>({});
 
   const getActiveAzkar = () => {
@@ -45,129 +49,144 @@ export default function Azkar() {
   };
 
   const handleTap = (zikr: Zikr) => {
-    setCounts(prev => {
+    setCounts((prev) => {
       const current = prev[zikr.id] || 0;
-      if (current >= zikr.count) return prev; // Already complete
-      
-      // Haptic feedback
-      if (typeof window !== "undefined" && window.navigator && window.navigator.vibrate) {
-        window.navigator.vibrate(20);
-      }
-      
+      if (current >= zikr.count) return prev;
+      if (typeof window !== "undefined" && window.navigator && window.navigator.vibrate) window.navigator.vibrate(20);
       return { ...prev, [zikr.id]: current + 1 };
     });
   };
 
   const resetAll = () => {
-    if (confirm("Are you sure you want to reset all counts?")) {
-      setCounts({});
-    }
+    if (confirm("Are you sure you want to reset all counts?")) setCounts({});
   };
 
+  const categories = [
+    { key: "morning" as const, label: "أذكار الصباح", englishLabel: "Morning", icon: Sun },
+    { key: "evening" as const, label: "أذكار المساء", englishLabel: "Evening", icon: Moon },
+    { key: "prayer" as const, label: "أذكار الصلاة", englishLabel: "Post-Prayer", icon: Sparkles },
+  ];
+
+  const azkarList = getActiveAzkar();
+  const completedCount = azkarList.filter(z => (counts[z.id] || 0) >= z.count).length;
+
   return (
-    <main className="min-h-screen bg-emerald-forest pt-24">
+    <main className="min-h-screen bg-[#F4F0E6] pt-20">
       <Navbar />
 
-      <div className="pb-24 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12 animate-in slide-in-from-bottom-5 duration-500">
-          <h1 className="text-5xl font-bold text-gold-soft font-[family-name:var(--font-tajawal)] mb-4">الأَذْكَار</h1>
-          <p className="text-white text-lg">Daily Supplications</p>
+      <div className="max-w-4xl mx-auto px-6 lg:px-10 pt-12 pb-24">
+        {/* Header */}
+        <div className="mb-12">
+          <h1 className="text-5xl md:text-6xl font-[family-name:var(--font-tajawal)] text-[#3B4A3F] font-bold mb-3">
+            الأذكار
+          </h1>
+          <p className="text-sm text-[#8C9886] tracking-wide">Daily Supplications</p>
         </div>
 
-        {/* Categories */}
-        <div className="flex justify-center gap-2 sm:gap-4 mb-12 flex-wrap">
-          <button
-            onClick={() => setActiveCategory("morning")}
-            className={`flex items-center gap-2 px-6 py-3 rounded-xl transition-all ${
-              activeCategory === "morning" 
-                ? "bg-gold-soft text-emerald-forest font-bold shadow-[0_0_20px_rgba(212,175,55,0.4)] transform scale-105" 
-                : "glass-card text-white/70 hover:text-white"
-            }`}
-          >
-            <Sun className="w-5 h-5" /> أذكار الصباح
-          </button>
-          <button
-            onClick={() => setActiveCategory("evening")}
-            className={`flex items-center gap-2 px-6 py-3 rounded-xl transition-all ${
-              activeCategory === "evening" 
-                ? "bg-gold-soft text-emerald-forest font-bold shadow-[0_0_20px_rgba(212,175,55,0.4)] transform scale-105" 
-                : "glass-card text-white/70 hover:text-white"
-            }`}
-          >
-            <Moon className="w-5 h-5" /> أذكار المساء
-          </button>
-          <button
-            onClick={() => setActiveCategory("prayer")}
-            className={`flex items-center gap-2 px-6 py-3 rounded-xl transition-all ${
-              activeCategory === "prayer" 
-                ? "bg-gold-soft text-emerald-forest font-bold shadow-[0_0_20px_rgba(212,175,55,0.4)] transform scale-105" 
-                : "glass-card text-white/70 hover:text-white"
-            }`}
-          >
-            <Sparkles className="w-5 h-5" /> أذكار الصلاة
-          </button>
+        {/* Category Tabs */}
+        <div className="flex gap-2 mb-6 flex-wrap">
+          {categories.map((cat) => (
+            <button
+              key={cat.key}
+              onClick={() => setActiveCategory(cat.key)}
+              className={`flex items-center gap-2.5 px-5 py-3 text-sm transition-all border font-[family-name:var(--font-tajawal)] ${
+                activeCategory === cat.key
+                  ? "bg-[#3B4A3F] text-[#F4F0E6] border-[#3B4A3F] font-semibold"
+                  : "bg-white border-[#3B4A3F]/10 text-[#5A6B5D] hover:border-[#3B4A3F]/25 hover:text-[#3B4A3F]"
+              }`}
+            >
+              <cat.icon className="w-4 h-4" />
+              {cat.label}
+            </button>
+          ))}
         </div>
 
-        {/* Reset Button */}
-        <div className="flex justify-end mb-6">
-          <button onClick={resetAll} className="text-sm text-white/40 hover:text-white transition-colors underline">
-            Reset Progress
+        {/* Progress + Reset */}
+        <div className="flex items-center justify-between mb-8 py-4 border-y border-[#3B4A3F]/8">
+          <div className="flex items-center gap-3">
+            <span className="text-[10px] text-[#8C9886] uppercase tracking-[0.2em] font-medium">Progress</span>
+            <span className="text-sm font-semibold text-[#3B4A3F]">{completedCount} / {azkarList.length}</span>
+            {/* Mini progress bar */}
+            <div className="w-24 h-1 bg-[#3B4A3F]/8 hidden sm:block">
+              <div
+                className="h-full bg-[#CEAA69] transition-all duration-500"
+                style={{ width: `${azkarList.length > 0 ? (completedCount / azkarList.length) * 100 : 0}%` }}
+              ></div>
+            </div>
+          </div>
+          <button onClick={resetAll} className="text-xs text-[#8C9886] hover:text-[#3B4A3F] transition-colors">
+            Reset
           </button>
         </div>
 
         {/* Azkar List */}
-        <div className="space-y-6">
-          {getActiveAzkar().map((zikr, index) => {
+        <div className="space-y-4">
+          {azkarList.map((zikr, index) => {
             const currentCount = counts[zikr.id] || 0;
             const isComplete = currentCount >= zikr.count;
-            const progressPercentage = (currentCount / zikr.count) * 100;
 
             return (
-              <div 
-                key={zikr.id} 
-                className={`glass-card p-6 sm:p-8 relative overflow-hidden transition-all duration-500 cursor-pointer select-none ${
-                  isComplete ? "border-gold-soft/50 bg-emerald-mid" : "hover:border-gold-soft/30 hover:shadow-xl hover:-translate-y-1"
+              <div
+                key={zikr.id}
+                className={`border transition-all cursor-pointer select-none relative overflow-hidden ${
+                  isComplete
+                    ? "bg-[#FCFAF5] border-[#3B4A3F]/15"
+                    : "bg-white border-[#3B4A3F]/5 hover:border-[#3B4A3F]/15 active:scale-[0.995]"
                 }`}
                 onClick={() => handleTap(zikr)}
-                style={{ animationDelay: `${index * 100}ms` }}
               >
-                {/* Progress Bar Background */}
-                <div 
-                  className="absolute bottom-0 left-0 h-1 bg-gold-soft transition-all duration-300"
-                  style={{ width: `${progressPercentage}%` }}
+                {/* Gold progress bar at bottom */}
+                <div
+                  className="absolute bottom-0 left-0 h-[2px] bg-[#CEAA69] transition-all duration-300"
+                  style={{ width: `${(currentCount / zikr.count) * 100}%` }}
                 />
 
-                <div className="text-center" dir="rtl">
-                  <p className={`text-2xl sm:text-3xl leading-relaxed font-[family-name:var(--font-amiri)] transition-colors ${isComplete ? "text-gold-soft" : "text-white"}`}>
+                {/* Zikr number indicator */}
+                <div className="flex items-center gap-3 px-6 md:px-8 pt-6">
+                  <span className={`w-6 h-6 flex items-center justify-center text-[10px] font-bold ${
+                    isComplete ? "bg-[#3B4A3F] text-[#F4F0E6]" : "bg-[#F4F0E6] text-[#8C9886]"
+                  }`}>
+                    {index + 1}
+                  </span>
+                  {isComplete && (
+                    <span className="flex items-center gap-1.5 text-[#3B4A3F] text-xs font-medium">
+                      <CheckCircle2 className="w-3.5 h-3.5" /> Completed
+                    </span>
+                  )}
+                </div>
+
+                {/* Arabic text */}
+                <div className="px-6 md:px-8 py-5" dir="rtl">
+                  <p className={`text-xl sm:text-2xl leading-[2.2] font-[family-name:var(--font-amiri)] transition-colors ${
+                    isComplete ? "text-[#8C9886]" : "text-[#3B4A3F]"
+                  }`}>
                     {zikr.text}
                   </p>
-                  
+
                   {zikr.virtue && (
-                    <p className="mt-4 text-sm text-gold-light/80 bg-emerald-deep/50 inline-block px-4 py-2 rounded-lg font-[family-name:var(--font-tajawal)]">
+                    <p className="mt-4 text-xs text-[#8C9886] font-[family-name:var(--font-tajawal)] leading-relaxed border-t border-[#3B4A3F]/5 pt-4">
+                      <span className="inline-block w-1 h-1 rounded-full bg-[#CEAA69] mr-2 align-middle"></span>
                       {zikr.virtue}
                     </p>
                   )}
                 </div>
 
-                {/* Counter */}
-                <div className="mt-8 flex items-center justify-between border-t border-white/10 pt-4">
-                  {isComplete ? (
-                    <div className="flex items-center gap-2 text-gold-soft font-bold animate-in zoom-in">
-                      <CheckCircle2 className="w-6 h-6" /> Completed
-                    </div>
-                  ) : (
-                    <div className="text-white/40 text-sm uppercase tracking-widest">
-                      Tap anywhere to count
-                    </div>
+                {/* Counter footer */}
+                <div className="flex items-center justify-between px-6 md:px-8 pb-5">
+                  {!isComplete && (
+                    <span className="text-[10px] text-[#8C9886] uppercase tracking-[0.2em]">
+                      Tap to count
+                    </span>
                   )}
-                  
-                  <div className={`px-4 py-2 rounded-xl font-bold text-lg border ${
-                    isComplete 
-                      ? "bg-gold-soft text-emerald-forest border-gold-soft" 
-                      : "bg-emerald-deep border-gold-soft/20 text-white"
+                  {isComplete && <span></span>}
+
+                  <span className={`px-3.5 py-1.5 text-sm font-medium border tabular-nums ${
+                    isComplete
+                      ? "bg-[#3B4A3F] text-[#F4F0E6] border-[#3B4A3F]"
+                      : "bg-white border-[#3B4A3F]/10 text-[#3B4A3F]"
                   }`}>
                     {currentCount} / {zikr.count}
-                  </div>
+                  </span>
                 </div>
               </div>
             );

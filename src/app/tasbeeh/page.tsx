@@ -3,7 +3,7 @@
 import { useCallback, useMemo, useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { RotateCcw, Target, Trophy } from "lucide-react";
+import { RotateCcw } from "lucide-react";
 
 const presets = [
   { arabic: "سُبْحَانَ اللَّه", english: "SubhanAllah" },
@@ -23,7 +23,6 @@ export default function Tasbeeh() {
   const [target, setTarget] = useState(33);
   const [selectedPreset, setSelectedPreset] = useState(0);
 
-  // Load totalCount from localStorage after hydration to avoid mismatch
   useEffect(() => {
     const savedTotal = localStorage.getItem("Bayan_total_count");
     const parsedTotal = savedTotal ? parseInt(savedTotal, 10) : 0;
@@ -33,16 +32,16 @@ export default function Tasbeeh() {
 
   const selectedZikr = presets[selectedPreset];
   const completedRounds = Math.floor(count / target);
-  const progressPercentage = useMemo(() => Math.min(((count % target || (count > 0 ? target : 0)) / target) * 100, 100), [count, target]);
+  const progressPercentage = useMemo(
+    () => Math.min(((count % target || (count > 0 ? target : 0)) / target) * 100, 100),
+    [count, target]
+  );
 
   const handleTap = useCallback(() => {
-    // Haptic feedback if supported
     if (typeof window !== "undefined" && window.navigator && window.navigator.vibrate) {
       window.navigator.vibrate(50);
     }
-
     setCount((prev) => prev + 1);
-    
     setTotalCount((prev) => {
       const newTotal = prev + 1;
       localStorage.setItem("Bayan_total_count", newTotal.toString());
@@ -59,15 +58,11 @@ export default function Tasbeeh() {
         handleTap();
       }
     };
-
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleTap]);
 
-  const resetCount = () => {
-    setCount(0);
-  };
-
+  const resetCount = () => setCount(0);
   const resetTotal = () => {
     if (confirm("Are you sure you want to reset lifetime total?")) {
       setTotalCount(0);
@@ -76,85 +71,91 @@ export default function Tasbeeh() {
   };
 
   return (
-    <main className="min-h-screen bg-emerald-forest pt-24">
+    <main className="min-h-screen bg-ed-beige pt-20">
       <Navbar />
 
-      <div className="pb-24 max-w-4xl mx-auto px-4 sm:px-6 flex flex-col items-center justify-center min-h-[70vh]">
-        <div className="text-center mb-12 animate-in slide-in-from-bottom-5 duration-500">
-          <h1 className="text-5xl font-bold text-gold-soft font-[family-name:var(--font-tajawal)] mb-4">المِسْبَحَة الإِلِكْتِرُونِيَّة</h1>
-          <p className="text-white text-lg">Digital Tasbeeh</p>
+      <div className="max-w-5xl mx-auto px-6 lg:px-10 pt-12 pb-24">
+        {/* Header */}
+        <div className="mb-16">
+          <h1 className="text-5xl md:text-6xl font-[family-name:var(--font-tajawal)] text-ed-green font-bold mb-3">
+           المسبحة الإلكترونية
+          </h1>
+          <p className="text-sm text-ed-text-muted tracking-wide">Digital Tasbeeh</p>
         </div>
 
-        <div className="w-full grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8 items-start">
-          <div className="flex flex-col items-center">
-            <div className="mb-6 text-center">
-              <p className="text-4xl sm:text-5xl text-gold-soft font-[family-name:var(--font-amiri)] leading-relaxed" dir="rtl">
+        <div className="flex flex-col lg:flex-row gap-16 items-start">
+          {/* Left: Counter */}
+          <div className="flex-1 flex flex-col items-center w-full">
+            {/* Current Zikr */}
+            <div className="mb-12 text-center">
+              <p className="text-4xl md:text-5xl text-ed-green font-[family-name:var(--font-amiri)] leading-relaxed" dir="rtl">
                 {selectedZikr.arabic}
               </p>
-              <p className="text-white/60 mt-2">{selectedZikr.english}</p>
+              <p className="text-sm text-ed-text-muted mt-3">{selectedZikr.english}</p>
             </div>
 
-            <div className="relative w-full max-w-xs mx-auto animate-in zoom-in-95 duration-500 delay-150">
-              {/* Main Tap Button */}
+            {/* Tap Circle */}
+            <div className="relative">
               <button
                 onClick={handleTap}
-                className="w-full aspect-square rounded-full glass-card border-4 border-gold-soft/30 hover:border-gold-soft/60 flex flex-col items-center justify-center shadow-[0_0_50px_rgba(212,175,55,0.15)] hover:shadow-[0_0_60px_rgba(212,175,55,0.3)] transition-all transform active:scale-95 group overflow-hidden relative"
-                style={{ background: `conic-gradient(rgba(212,175,55,0.18) ${progressPercentage * 3.6}deg, rgba(10,58,42,0.85) 0deg)` }}
+                className="w-56 h-56 md:w-64 md:h-64 rounded-full bg-ed-green flex flex-col items-center justify-center shadow-lg hover:shadow-xl transition-all transform active:scale-95 relative overflow-hidden group"
               >
-                {/* Ripple effect container */}
-                <div className="absolute inset-3 bg-emerald-deep rounded-full border border-white/10"></div>
-                
-                <span className="text-7xl font-bold text-white font-[family-name:var(--font-sans)] drop-shadow-lg z-10">
-                  {count}
-                </span>
-                <span className="text-gold-soft/70 mt-2 uppercase tracking-widest text-xs font-bold z-10">
+                {/* Progress ring */}
+                <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="46" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="2" />
+                  <circle
+                    cx="50" cy="50" r="46" fill="none"
+                    stroke="rgba(206,170,105,0.6)" strokeWidth="2"
+                    strokeDasharray={`${progressPercentage * 2.89} 289`}
+                    strokeLinecap="round"
+                    className="transition-all duration-300"
+                  />
+                </svg>
+
+                <span className="text-6xl md:text-7xl font-bold text-ed-beige z-10">{count}</span>
+                <span className="text-xs text-ed-beige-warm/50 mt-2 z-10 tracking-wider">
                   {count % target || (count > 0 ? target : 0)} / {target}
                 </span>
-                <span className="text-white/40 mt-1 text-xs z-10">
-                  Space / Enter
-                </span>
+                <span className="text-[10px] text-ed-beige-warm/30 mt-1 z-10">Space / Enter</span>
               </button>
 
-              {/* Reset Button */}
               <button
                 onClick={resetCount}
-                className="absolute -bottom-6 -right-2 w-14 h-14 rounded-full bg-emerald-deep border border-gold-soft/30 flex items-center justify-center text-white/60 hover:text-white hover:bg-emerald-mid hover:border-gold-soft shadow-lg transition-all transform hover:scale-110 active:scale-95"
+                className="absolute -bottom-4 -right-4 w-12 h-12 rounded-full bg-white border border-ed-green/10 flex items-center justify-center text-ed-text-muted hover:text-ed-green hover:border-ed-green/20 shadow-sm transition-all"
                 title="Reset Counter"
               >
-                <RotateCcw className="w-6 h-6" />
+                <RotateCcw className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="mt-16 grid grid-cols-2 gap-4 w-full max-w-md animate-in slide-in-from-bottom-5 duration-500 delay-300">
-              <div className="text-center glass-card px-6 py-4 rounded-2xl">
-                <p className="text-white/60 text-xs mb-1 uppercase tracking-widest">Rounds</p>
-                <p className="text-3xl font-bold text-gold-soft">{completedRounds}</p>
+            {/* Stats */}
+            <div className="mt-16 flex gap-12 text-center">
+              <div>
+                <p className="text-[10px] text-ed-text-muted uppercase tracking-[0.2em] mb-2">Rounds</p>
+                <p className="text-3xl font-semibold text-ed-green">{completedRounds}</p>
               </div>
-              <div className="text-center glass-card px-6 py-4 rounded-2xl">
-                <p className="text-white/60 text-xs mb-1 uppercase tracking-widest">Lifetime</p>
-                <p className="text-3xl font-bold text-gold-soft">{mounted ? totalCount.toLocaleString() : "–"}</p>
+              <div className="w-px bg-ed-green/8"></div>
+              <div>
+                <p className="text-[10px] text-ed-text-muted uppercase tracking-[0.2em] mb-2">Lifetime</p>
+                <p className="text-3xl font-semibold text-ed-green">{mounted ? totalCount.toLocaleString() : "–"}</p>
               </div>
             </div>
           </div>
 
-          <div className="w-full glass-card p-6 space-y-6">
+          {/* Right: Controls */}
+          <div className="w-full lg:w-80 space-y-10">
+            {/* Choose Zikr */}
             <div>
-              <div className="flex items-center gap-2 text-gold-soft font-bold mb-3">
-                <Trophy className="w-5 h-5" />
-                Choose Zikr
-              </div>
+              <h3 className="text-xs text-ed-text-muted uppercase tracking-[0.2em] mb-4 font-medium">Choose Zikr</h3>
               <div className="space-y-2">
                 {presets.map((preset, index) => (
                   <button
                     key={preset.english}
-                    onClick={() => {
-                      setSelectedPreset(index);
-                      setCount(0);
-                    }}
-                    className={`w-full px-4 py-3 rounded-xl border text-right transition-colors ${
+                    onClick={() => { setSelectedPreset(index); setCount(0); }}
+                    className={`w-full px-4 py-3.5 text-right transition-all border text-sm ${
                       selectedPreset === index
-                        ? "bg-gold-soft text-emerald-forest border-gold-soft font-bold"
-                        : "bg-emerald-forest border-gold-soft/20 text-white hover:border-gold-soft/50"
+                        ? "bg-ed-green text-ed-beige border-ed-green font-semibold"
+                        : "bg-white border-ed-green/8 text-ed-text hover:border-ed-green/20"
                     }`}
                     dir="rtl"
                   >
@@ -164,23 +165,18 @@ export default function Tasbeeh() {
               </div>
             </div>
 
+            {/* Target */}
             <div>
-              <div className="flex items-center gap-2 text-gold-soft font-bold mb-3">
-                <Target className="w-5 h-5" />
-                Target
-              </div>
+              <h3 className="text-xs text-ed-text-muted uppercase tracking-[0.2em] mb-4 font-medium">Target</h3>
               <div className="grid grid-cols-2 gap-2">
                 {targets.map((targetValue) => (
                   <button
                     key={targetValue}
-                    onClick={() => {
-                      setTarget(targetValue);
-                      setCount(0);
-                    }}
-                    className={`px-4 py-3 rounded-xl border transition-colors ${
+                    onClick={() => { setTarget(targetValue); setCount(0); }}
+                    className={`px-4 py-3 border transition-all text-sm ${
                       target === targetValue
-                        ? "bg-gold-soft text-emerald-forest border-gold-soft font-bold"
-                        : "bg-emerald-forest border-gold-soft/20 text-white hover:border-gold-soft/50"
+                        ? "bg-ed-green text-ed-beige border-ed-green font-semibold"
+                        : "bg-white border-ed-green/8 text-ed-text hover:border-ed-green/20"
                     }`}
                   >
                     {targetValue}
@@ -189,7 +185,7 @@ export default function Tasbeeh() {
               </div>
             </div>
 
-            <button onClick={resetTotal} className="w-full text-sm text-white/40 hover:text-white transition-colors underline">
+            <button onClick={resetTotal} className="text-xs text-ed-text-muted hover:text-ed-green transition-colors">
               Reset Lifetime Total
             </button>
           </div>

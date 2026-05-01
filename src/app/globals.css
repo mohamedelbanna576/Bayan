@@ -1,127 +1,117 @@
 @import "tailwindcss";
 
+/* ═══════════════════════════════════════════════════════════════
+   BAYAN — Editorial Design System
+   Palette: Deep Muted Green · Warm Beige · Soft Gold
+   ═══════════════════════════════════════════════════════════════ */
+
 :root {
-  --emerald-deep: #0A3A2A;
-  --emerald-forest: #06251A;
-  --emerald-mid: #0D4A34;
-  --gold-soft: #D4AF37;
-  --gold-light: #E8C547;
-  --sand: #F5E6C8;
+  /* ── Core Palette ────────────────────────────────────────── */
+  --green-deep: #3B4A3F;
+  --green-dark: #2C362A;
+  --green-muted: #5A6B5D;
+  --green-soft: #8C9886;
+  --beige: #F4F0E6;
+  --beige-warm: #EAE5D9;
+  --beige-light: #FCFAF5;
+  --gold: #CEAA69;
+  --gold-muted: #D4B37F;
+  --text-primary: #2C362A;
+  --text-secondary: #5A6B5D;
+  --text-muted: #8C9886;
+  --white: #FFFFFF;
 }
 
 @theme inline {
-  --color-emerald-deep: var(--emerald-deep);
-  --color-emerald-forest: var(--emerald-forest);
-  --color-emerald-mid: var(--emerald-mid);
-  --color-gold-soft: var(--gold-soft);
-  --color-gold-light: var(--gold-light);
-  --color-sand: var(--sand);
-  
+  /* ── Restore Tailwind defaults (previously overridden) ── */
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  /* ── Bayan Palette ──────────────────────────────────────── */
+  --color-ed-green: var(--green-deep);
+  --color-ed-green-dark: var(--green-dark);
+  --color-ed-green-muted: var(--green-muted);
+  --color-ed-green-soft: var(--green-soft);
+  --color-ed-beige: var(--beige);
+  --color-ed-beige-warm: var(--beige-warm);
+  --color-ed-beige-light: var(--beige-light);
+  --color-ed-gold: var(--gold);
+  --color-ed-gold-muted: var(--gold-muted);
+  --color-ed-text: var(--text-primary);
+  --color-ed-text-secondary: var(--text-secondary);
+  --color-ed-text-muted: var(--text-muted);
+
+  /* ── Additional common colors ───────────────────────────── */
+  --color-red-50: #fef2f2;
+  --color-red-200: #fecaca;
+  --color-red-400: #f87171;
+  --color-red-700: #b91c1c;
+  --color-amber-50: #fffbeb;
+  --color-amber-200: #fde68a;
+  --color-amber-700: #b45309;
+
+  /* ── Fonts ──────────────────────────────────────────────── */
   --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-serif: 'Georgia', 'Times New Roman', serif;
   --font-display-theme: var(--font-display), sans-serif;
 }
 
+/* ── Base ──────────────────────────────────────────────────── */
 body {
-  background-color: var(--emerald-forest);
-  color: white;
+  background-color: var(--beige);
+  color: var(--text-primary);
   font-family: var(--font-sans);
   min-height: 100vh;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Glassmorphism design cards */
-.flat-card, .glass-card {
-  background-color: rgba(10, 58, 42, 0.85); /* emerald-deep with opacity */
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(212, 175, 55, 0.2);
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+::selection {
+  background-color: rgba(206, 170, 105, 0.3);
 }
 
-/* Gold text */
-.text-gold {
-  color: var(--gold-soft);
-}
-
-/* Buttons */
-.btn-gold {
-  background-color: var(--gold-soft);
-  color: var(--emerald-forest);
-  font-weight: 600;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  transition: background-color 0.2s ease;
-  cursor: pointer;
-  border: none;
-}
-
-.btn-gold:hover {
-  background-color: var(--gold-light);
-}
-
-.btn-outline-gold {
-  background-color: transparent;
-  color: var(--gold-soft);
-  border: 1px solid var(--gold-soft);
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  transition: background-color 0.2s ease;
-  cursor: pointer;
-}
-
-.btn-outline-gold:hover {
-  background-color: rgba(212, 175, 55, 0.1);
-}
-
-/* Section title */
-.section-title {
-  font-family: var(--font-display-theme);
-  font-size: 3rem;
-  font-weight: 700;
-  line-height: 1.2;
-  margin-bottom: 1.5rem;
-}
-
-/* Card hover - premium lift effect */
-.card-hover {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.card-hover:hover {
-  border-color: var(--gold-soft);
-  background-color: rgba(13, 74, 52, 0.95); /* emerald-mid with opacity */
-  transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
-}
-
-/* Scrollbar */
+/* ── Scrollbar ─────────────────────────────────────────────── */
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
-
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
 
-/* Volume slider */
+/* ── Volume slider ─────────────────────────────────────────── */
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: var(--gold-soft);
+  background: var(--gold);
   cursor: pointer;
-  border: 2px solid var(--emerald-forest);
+  border: 2px solid var(--green-deep);
 }
-
 input[type="range"]::-moz-range-thumb {
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: var(--gold-soft);
+  background: var(--gold);
   cursor: pointer;
-  border: 2px solid var(--emerald-forest);
+  border: 2px solid var(--green-deep);
+}
+
+/* ── Animations ────────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.animate-fade-up {
+  animation: fadeUp 0.6s ease-out forwards;
+}
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
 }
