@@ -4,6 +4,7 @@ import "./globals.css";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { AudioProvider } from "@/context/AudioContext";
 import GlobalAudioPlayer from "@/components/GlobalAudioPlayer";
+import ShareButton from "@/components/ShareButton";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -45,6 +46,7 @@ export default function RootLayout({
         <LanguageProvider>
           <AudioProvider>
             {children}
+            <ShareButton />
           </AudioProvider>
         </LanguageProvider>
       </body>
