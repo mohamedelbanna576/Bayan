@@ -14,12 +14,12 @@ export default function ShareButton() {
   }, []);
 
   const handleShare = async () => {
-    const shareData = {
+    const shareData: ShareData = {
       title: "Bayan Platform | منصة بيان",
       text: t(
         "Explore the Holy Quran, Prayer Times, and Azkar on Bayan - A Sadaqah Jariyah project.",
         "استكشف القرآن الكريم ومواقيت الصلاة والأذكار على منصة بيان - مشروع صدقة جارية."
-      ),
+      ) as string,
       url: window.location.origin,
     };
 
