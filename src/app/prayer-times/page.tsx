@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { MapPin, Clock, Loader2, Calendar, Navigation } from "lucide-react";
@@ -12,6 +12,23 @@ interface PrayerTimesData {
   Asr: string;
   Maghrib: string;
   Isha: string;
+}
+
+type PrayerName = keyof PrayerTimesData;
+
+interface AladhanTimings extends PrayerTimesData {
+  [key: string]: string;
+}
+
+interface AladhanDate {
+  hijri?: {
+    day: string;
+    month: {
+      en: string;
+      ar: string;
+    };
+    year: string;
+  };
 }
 
 const commonLocations = [
@@ -35,19 +52,70 @@ export default function PrayerTimes() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [locationName, setLocationName] = useState<string>("Detecting location...");
-  const [dateStr, setDateStr] = useState<string>("");
-
-  useEffect(() => {
-    // Format current date
+  const [dateStr] = useState<string>(() => {
     const now = new Date();
     const options: Intl.DateTimeFormatOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    setDateStr(now.toLocaleDateString('en-US', options));
+    return now.toLocaleDateString('en-US', options);
+  });
+  const [hijriDate, setHijriDate] = useState<string>("");
 
-    // Try geolocation first, if denied, fallback to Cairo
-    handleDetectLocation(true);
+  const setPrayerData = useCallback((pt: AladhanTimings, date?: AladhanDate) => {
+    setTimes({
+      Fajr: pt.Fajr,
+      Sunrise: pt.Sunrise,
+      Dhuhr: pt.Dhuhr,
+      Asr: pt.Asr,
+      Maghrib: pt.Maghrib,
+      Isha: pt.Isha
+    });
+
+    if (date?.hijri) {
+      setHijriDate(`${date.hijri.day} ${date.hijri.month.en} ${date.hijri.year} AH`);
+    }
   }, []);
 
-  const handleDetectLocation = (isInitial = false) => {
+  const fetchPrayerTimesByCoords = useCallback(async (lat: number, lng: number) => {
+    try {
+      const now = new Date();
+      const timestamp = Math.floor(now.getTime() / 1000);
+      const res = await fetch(`https://api.aladhan.com/v1/timings/${timestamp}?latitude=${lat}&longitude=${lng}`);
+      const data = await res.json();
+      
+      if (data.code === 200) {
+        setPrayerData(data.data.timings, data.data.date);
+      } else {
+        setError("Could not fetch prayer times.");
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Failed to connect to prayer times service.");
+    } finally {
+      setLoading(false);
+    }
+  }, [setPrayerData]);
+
+  const fetchPrayerTimesByCity = useCallback(async (city: string, country: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch(`https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}`);
+      const data = await res.json();
+      
+      if (data.code === 200) {
+        setPrayerData(data.data.timings, data.data.date);
+        setLocationName(`${city}, ${country}`);
+      } else {
+        setError("Could not fetch prayer times for this location.");
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Failed to connect to prayer times service.");
+    } finally {
+      setLoading(false);
+    }
+  }, [setPrayerData]);
+
+  const handleDetectLocation = useCallback((isInitial = false) => {
     setLoading(true);
     setError(null);
     setLocationName("Detecting GPS location...");
@@ -67,9 +135,8 @@ export default function PrayerTimes() {
           }
         },
         (err) => {
-          console.error(err);
+          console.error("Geolocation error:", err.message);
           if (isInitial) {
-            // Fallback to default if denied on first load
             fetchPrayerTimesByCity("Cairo", "Egypt");
             setError("Location access denied. Displaying default location (Cairo).");
           } else {
@@ -86,59 +153,12 @@ export default function PrayerTimes() {
         setLoading(false);
       }
     }
-  };
+  }, [fetchPrayerTimesByCity, fetchPrayerTimesByCoords]);
 
-  const fetchPrayerTimesByCoords = async (lat: number, lng: number) => {
-    try {
-      const now = new Date();
-      const timestamp = Math.floor(now.getTime() / 1000);
-      const res = await fetch(`https://api.aladhan.com/v1/timings/${timestamp}?latitude=${lat}&longitude=${lng}`);
-      const data = await res.json();
-      
-      if (data.code === 200) {
-        setPrayerData(data.data.timings);
-      } else {
-        setError("Could not fetch prayer times.");
-      }
-    } catch (err) {
-      console.error(err);
-      setError("Failed to connect to prayer times service.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchPrayerTimesByCity = async (city: string, country: string) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await fetch(`https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}`);
-      const data = await res.json();
-      
-      if (data.code === 200) {
-        setPrayerData(data.data.timings);
-        setLocationName(`${city}, ${country}`);
-      } else {
-        setError("Could not fetch prayer times for this location.");
-      }
-    } catch (err) {
-      console.error(err);
-      setError("Failed to connect to prayer times service.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const setPrayerData = (pt: any) => {
-    setTimes({
-      Fajr: pt.Fajr,
-      Sunrise: pt.Sunrise,
-      Dhuhr: pt.Dhuhr,
-      Asr: pt.Asr,
-      Maghrib: pt.Maghrib,
-      Isha: pt.Isha
-    });
-  };
+  useEffect(() => {
+    const timer = window.setTimeout(() => handleDetectLocation(true), 0);
+    return () => window.clearTimeout(timer);
+  }, [handleDetectLocation]);
 
   const convertTo12Hour = (time24: string) => {
     // Aladhan API returns times like "05:12 (EET)", so strip everything after the space
@@ -159,6 +179,19 @@ export default function PrayerTimes() {
     { name: "Maghrib", arabic: "المَغْرِب", time: times.Maghrib },
     { name: "Isha", arabic: "العِشَاء", time: times.Isha }
   ] : [];
+
+  const getPrayerMinutes = (time: string) => {
+    const cleanTime = time.split(" ")[0];
+    const [hours, minutes] = cleanTime.split(":").map((part) => parseInt(part, 10));
+    return hours * 60 + minutes;
+  };
+
+  const nextPrayer = times
+    ? (Object.entries(times) as [PrayerName, string][])
+        .map(([name, time]) => ({ name, time, minutes: getPrayerMinutes(time) }))
+        .find((prayer) => prayer.minutes > new Date().getHours() * 60 + new Date().getMinutes()) ||
+      { name: "Fajr" as PrayerName, time: times.Fajr, minutes: getPrayerMinutes(times.Fajr) + 24 * 60 }
+    : null;
 
   return (
     <main className="min-h-screen bg-emerald-forest pt-24">
@@ -231,8 +264,20 @@ export default function PrayerTimes() {
                   <p className="text-white/60 text-sm flex items-center gap-2 mt-1">
                     <Calendar className="w-4 h-4" /> {dateStr}
                   </p>
+                  {hijriDate && (
+                    <p className="text-gold-soft/80 text-sm flex items-center gap-2 mt-1">
+                      <Calendar className="w-4 h-4" /> {hijriDate}
+                    </p>
+                  )}
                 </div>
               </div>
+              {nextPrayer && (
+                <div className="z-10 text-center md:text-right bg-emerald-forest/80 border border-gold-soft/20 rounded-2xl px-5 py-4">
+                  <p className="text-white/50 text-xs uppercase tracking-widest mb-1">Next Prayer</p>
+                  <p className="text-gold-soft font-bold text-xl">{nextPrayer.name}</p>
+                  <p className="text-white font-mono">{convertTo12Hour(nextPrayer.time)}</p>
+                </div>
+              )}
             </div>
 
             {/* Times Grid */}
@@ -256,6 +301,11 @@ export default function PrayerTimes() {
                   <div className="inline-block bg-emerald-deep px-4 py-2 rounded-lg border border-gold-soft/20 text-gold-light font-bold font-mono text-lg">
                     {convertTo12Hour(prayer.time)}
                   </div>
+                  {nextPrayer?.name === prayer.name && (
+                    <div className="mt-4 text-xs text-emerald-forest bg-gold-soft rounded-full px-3 py-1 font-bold inline-block">
+                      Next
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

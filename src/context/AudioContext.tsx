@@ -48,9 +48,9 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     if (!audioRef.current) return;
     try {
       await audioRef.current.play();
-    } catch (err: any) {
+    } catch (err: unknown) {
       // AbortError is expected when a new load interrupts an old play — ignore it
-      if (err.name !== "AbortError") {
+      if (!(err instanceof DOMException && err.name === "AbortError")) {
         console.error("Audio playback error:", err);
       }
     }

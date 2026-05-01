@@ -2,11 +2,9 @@
 
 import { useAudio } from "@/context/AudioContext";
 import { Play, Pause, X, Volume2, Volume1, VolumeX, SkipForward, SkipBack } from "lucide-react";
-import { useEffect, useState } from "react";
 
 export default function GlobalAudioPlayer() {
   const { currentTrack, isPlaying, togglePlayPause, stopAudio, volume, setVolume, playlist, currentIndex, playPlaylist } = useAudio();
-  const [showVolume, setShowVolume] = useState(false);
 
   // Hide when not playing or no track
   if (!currentTrack) return null;

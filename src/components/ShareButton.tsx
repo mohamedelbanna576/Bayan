@@ -1,17 +1,12 @@
 "use client";
 
-import { Share2, Link as LinkIcon, Send } from "lucide-react";
+import { Share2, Link as LinkIcon } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 export default function ShareButton() {
   const { t } = useLanguage();
   const [showToast, setShowToast] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   const handleShare = async () => {
     const shareData: ShareData = {
@@ -36,8 +31,6 @@ export default function ShareButton() {
       setTimeout(() => setShowToast(false), 3000);
     }
   };
-
-  if (!isMounted) return null;
 
   return (
     <>

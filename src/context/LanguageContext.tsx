@@ -14,26 +14,19 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider = ({ children }: { children: React.ReactNode }) => {
-  const [language, setLanguageState] = useState<Language>('en');
+  const [language, setLanguageState] = useState<Language>(() => {
+    if (typeof window === "undefined") return "en";
+    const savedLang = localStorage.getItem("preferredLanguage");
+    return savedLang === "ar" || savedLang === "en" ? savedLang : "en";
+  });
 
   useEffect(() => {
-    const savedLang = localStorage.getItem("preferredLanguage") as Language;
-    if (savedLang) {
-      setLanguageState(savedLang);
-      if (savedLang === 'ar') {
-        document.documentElement.lang = 'ar';
-      }
-    }
-  }, []);
+    document.documentElement.lang = language;
+  }, [language]);
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
     localStorage.setItem("preferredLanguage", lang);
-    if (lang === 'ar') {
-      document.documentElement.lang = 'ar';
-    } else {
-      document.documentElement.lang = 'en';
-    }
   };
 
   const toggleLanguage = () => {

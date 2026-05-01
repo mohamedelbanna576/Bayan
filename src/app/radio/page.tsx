@@ -1,9 +1,9 @@
 ﻿"use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Search, Radio as RadioIcon, Loader2, Play, Pause, Volume2, Volume1, VolumeX } from "lucide-react";
+import { Search, Radio as RadioIcon, Loader2, Play, Pause } from "lucide-react";
 import { useAudio } from "@/context/AudioContext";
 import GlobalAudioPlayer from "@/components/GlobalAudioPlayer";
 
@@ -13,14 +13,19 @@ interface RadioStation {
   url: string;
 }
 
+interface RadioApiStation {
+  id?: number;
+  name: string;
+  url: string;
+}
+
 export default function IslamicRadio() {
   const [stations, setStations] = useState<RadioStation[]>([]);
-  const [filtered, setFiltered] = useState<RadioStation[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
-  const { currentTrack, isPlaying, playTrack, stopAudio, togglePlayPause } = useAudio();
+  const { currentTrack, isPlaying, playTrack, togglePlayPause } = useAudio();
   
   const isCurrentlyPlaying = (stationId: number) => {
     return currentTrack?.type === "radio" && currentTrack.id === stationId && isPlaying;
@@ -37,13 +42,12 @@ export default function IslamicRadio() {
         const res = await fetch("/api/radios");
         const data = await res.json();
         if (data.radios && data.radios.length > 0) {
-          const mapped = data.radios.map((r: any, index: number) => ({
+          const mapped = data.radios.map((r: RadioApiStation, index: number) => ({
             id: r.id || index + 1,
             name: r.name,
             url: r.url ? r.url.replace("http://", "https://") : r.url,
           }));
           setStations(mapped);
-          setFiltered(mapped);
         } else {
           setError("No stations available. Please try again later.");
         }
@@ -56,14 +60,13 @@ export default function IslamicRadio() {
     fetchRadios();
   }, []);
 
-  useEffect(() => {
+  const filtered = useMemo(() => {
     if (!search.trim()) {
-      setFiltered(stations);
-    } else {
-      setFiltered(
-        stations.filter((s) => s.name.includes(search) || s.name.toLowerCase().includes(search.toLowerCase()))
-      );
+      return stations;
     }
+
+    const normalizedSearch = search.toLowerCase();
+    return stations.filter((s) => s.name.includes(search) || s.name.toLowerCase().includes(normalizedSearch));
   }, [search, stations]);
 
   const togglePlay = (station: RadioStation) => {

@@ -1,4 +1,4 @@
-# Dhikr Platform
+# Bayan Platform
 
 Modern Islamic digital platform (Next.js) with a real backend:
 

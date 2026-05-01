@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Search, BookOpen, Loader2 } from "lucide-react";
@@ -15,9 +15,17 @@ interface Surah {
   revelationType: string;
 }
 
+const normalizeArabic = (text: string) =>
+  text
+    .replace(/[\u064B-\u065F\u0670]/g, "")
+    .replace(/[أإآٱ]/g, "ا")
+    .replace(/ة/g, "ه")
+    .replace(/سورة /g, "")
+    .replace(/سوره /g, "")
+    .trim();
+
 export default function Tafsir() {
   const [surahs, setSurahs] = useState<Surah[]>([]);
-  const [filtered, setFiltered] = useState<Surah[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -28,7 +36,6 @@ export default function Tafsir() {
         const data = await res.json();
         if (data.code === 200) {
           setSurahs(data.data);
-          setFiltered(data.data);
         }
       } catch (err) {
         console.error("Failed to fetch surahs:", err);
@@ -39,20 +46,20 @@ export default function Tafsir() {
     fetchSurahs();
   }, []);
 
-  useEffect(() => {
+  const filtered = useMemo(() => {
     if (!search.trim()) {
-      setFiltered(surahs);
-    } else {
-      const q = search.toLowerCase();
-      setFiltered(
-        surahs.filter(
-          (s) =>
-            s.englishName.toLowerCase().includes(q) ||
-            s.name.includes(search) ||
-            s.englishNameTranslation.toLowerCase().includes(q)
-        )
-      );
+      return surahs;
     }
+
+    const q = search.toLowerCase();
+    const normalizedQuery = normalizeArabic(q);
+
+    return surahs.filter(
+      (s) =>
+        s.englishName.toLowerCase().includes(q) ||
+        normalizeArabic(s.name).includes(normalizedQuery) ||
+        s.englishNameTranslation.toLowerCase().includes(q)
+    );
   }, [search, surahs]);
 
   return (
@@ -64,7 +71,7 @@ export default function Tafsir() {
           <h1 className="text-5xl font-bold text-gold-soft font-[family-name:var(--font-tajawal)] mb-4">تفسير القرآن الكريم</h1>
           <p className="text-white text-lg">Quran Tafsir</p>
           <p className="text-white/60 text-sm mt-4 max-w-2xl mx-auto">
-            Explore detailed interpretations and explanations of Quranic verses from renowned scholars — Tafsir Al-Muyassar.
+            Explore detailed interpretations and explanations of Quranic verses from renowned scholars — choose from multiple tafsir sources.
           </p>
         </div>
 
@@ -86,6 +93,10 @@ export default function Tafsir() {
         {loading ? (
           <div className="flex justify-center items-center py-24">
             <Loader2 className="w-12 h-12 text-gold-soft animate-spin" />
+          </div>
+        ) : filtered.length === 0 ? (
+          <div className="flat-card p-8 text-center text-white/60">
+            No tafsir results found. Try another surah name.
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

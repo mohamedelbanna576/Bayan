@@ -3,7 +3,6 @@ import { Inter, Outfit, Tajawal, Amiri, Cairo } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { AudioProvider } from "@/context/AudioContext";
-import GlobalAudioPlayer from "@/components/GlobalAudioPlayer";
 import ShareButton from "@/components/ShareButton";
 
 const inter = Inter({

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, use } from "react";
+import { useState, useEffect, use } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { ArrowLeft, Pause, Loader2, Play, ChevronDown } from "lucide-react";
@@ -33,6 +33,14 @@ interface Reciter {
   bitrate?: number;
 }
 
+interface AudioEdition {
+  identifier: string;
+  englishName: string;
+  name: string;
+  language: string;
+  type: string;
+}
+
 export default function SurahPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const [surah, setSurah] = useState<SurahData | null>(null);
@@ -41,7 +49,7 @@ export default function SurahPage({ params }: { params: Promise<{ id: string }> 
   const [selectedReciter, setSelectedReciter] = useState<string>("ar.alafasy");
   const [showReciters, setShowReciters] = useState(false);
   
-  const { currentTrack, isPlaying, playPlaylist, stopAudio, togglePlayPause } = useAudio();
+  const { currentTrack, isPlaying, playPlaylist, togglePlayPause } = useAudio();
 
   const isSurahPlaying = currentTrack?.type === "quran" && currentTrack.id.toString().startsWith(`${surah?.number}-`);
   
@@ -81,8 +89,8 @@ export default function SurahPage({ params }: { params: Promise<{ id: string }> 
         const data = await res.json();
         if (data.code === 200) {
           const arabicReciters = data.data
-            .filter((e: any) => e.language === "ar" && e.type === "versebyverse")
-            .map((e: any) => ({
+            .filter((e: AudioEdition) => e.language === "ar" && e.type === "versebyverse")
+            .map((e: AudioEdition) => ({
               identifier: e.identifier,
               englishName: e.englishName,
               name: e.name,
@@ -100,7 +108,7 @@ export default function SurahPage({ params }: { params: Promise<{ id: string }> 
           ];
           
           moreSheikhs.forEach(sheikh => {
-            if (!arabicReciters.find((r: any) => r.identifier === sheikh.identifier)) {
+            if (!arabicReciters.find((r: Reciter) => r.identifier === sheikh.identifier)) {
               arabicReciters.push(sheikh);
             }
           });
