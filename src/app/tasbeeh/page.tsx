@@ -1,8 +1,9 @@
 "use client";
 
-import { useCallback, useMemo, useState, useEffect } from "react";
+import { useCallback, useMemo, useState, useEffect, useSyncExternalStore } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { useLanguage } from "@/context/LanguageContext";
 import { RotateCcw } from "lucide-react";
 
 const presets = [
@@ -15,20 +16,32 @@ const presets = [
 ];
 
 const targets = [33, 100, 500, 1000];
+const TOTAL_COUNT_KEY = "Bayan_total_count";
+const TOTAL_COUNT_EVENT = "bayan-total-count-change";
+
+const getStoredTotalCount = () => {
+  if (typeof window === "undefined") return 0;
+  const savedTotal = localStorage.getItem(TOTAL_COUNT_KEY);
+  const parsedTotal = savedTotal ? parseInt(savedTotal, 10) : 0;
+  return Number.isNaN(parsedTotal) ? 0 : parsedTotal;
+};
+
+const subscribeToTotalCount = (callback: () => void) => {
+  window.addEventListener("storage", callback);
+  window.addEventListener(TOTAL_COUNT_EVENT, callback);
+  return () => {
+    window.removeEventListener("storage", callback);
+    window.removeEventListener(TOTAL_COUNT_EVENT, callback);
+  };
+};
 
 export default function Tasbeeh() {
   const [count, setCount] = useState(0);
-  const [totalCount, setTotalCount] = useState(0);
-  const [mounted, setMounted] = useState(false);
   const [target, setTarget] = useState(33);
   const [selectedPreset, setSelectedPreset] = useState(0);
-
-  useEffect(() => {
-    const savedTotal = localStorage.getItem("Bayan_total_count");
-    const parsedTotal = savedTotal ? parseInt(savedTotal, 10) : 0;
-    setTotalCount(Number.isNaN(parsedTotal) ? 0 : parsedTotal);
-    setMounted(true);
-  }, []);
+  const totalCount = useSyncExternalStore(subscribeToTotalCount, getStoredTotalCount, () => 0);
+  const { language, t } = useLanguage();
+  const isArabic = language === "ar";
 
   const selectedZikr = presets[selectedPreset];
   const completedRounds = Math.floor(count / target);
@@ -42,11 +55,8 @@ export default function Tasbeeh() {
       window.navigator.vibrate(50);
     }
     setCount((prev) => prev + 1);
-    setTotalCount((prev) => {
-      const newTotal = prev + 1;
-      localStorage.setItem("Bayan_total_count", newTotal.toString());
-      return newTotal;
-    });
+    localStorage.setItem(TOTAL_COUNT_KEY, (getStoredTotalCount() + 1).toString());
+    window.dispatchEvent(new Event(TOTAL_COUNT_EVENT));
   }, []);
 
   useEffect(() => {
@@ -64,9 +74,9 @@ export default function Tasbeeh() {
 
   const resetCount = () => setCount(0);
   const resetTotal = () => {
-    if (confirm("Are you sure you want to reset lifetime total?")) {
-      setTotalCount(0);
-      localStorage.removeItem("Bayan_total_count");
+    if (confirm(t("Are you sure you want to reset lifetime total?", "هل أنت متأكد من إعادة تعيين المجموع الكلي؟") as string)) {
+      localStorage.removeItem(TOTAL_COUNT_KEY);
+      window.dispatchEvent(new Event(TOTAL_COUNT_EVENT));
     }
   };
 
@@ -77,10 +87,10 @@ export default function Tasbeeh() {
       <div className="max-w-5xl mx-auto px-6 lg:px-10 pt-12 pb-24">
         {/* Header */}
         <div className="mb-16">
-          <h1 className="text-5xl md:text-6xl font-[family-name:var(--font-tajawal)] text-ed-green font-bold mb-3">
-           المسبحة الإلكترونية
+          <h1 className={`text-5xl md:text-6xl text-ed-green font-bold mb-3 ${isArabic ? "font-[family-name:var(--font-tajawal)]" : ""}`} style={{ fontFamily: isArabic ? undefined : 'Georgia, serif' }}>
+            {t("Digital Tasbeeh", "المسبحة الإلكترونية")}
           </h1>
-          <p className="text-sm text-ed-text-muted tracking-wide">Digital Tasbeeh</p>
+          <p className={`text-sm text-ed-text-muted tracking-wide ${isArabic ? "font-[family-name:var(--font-tajawal)]" : ""}`}>{t("Digital Counter", "عدّاد رقمي")}</p>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-16 items-start">
@@ -131,13 +141,13 @@ export default function Tasbeeh() {
             {/* Stats */}
             <div className="mt-16 flex gap-12 text-center">
               <div>
-                <p className="text-[10px] text-ed-text-muted uppercase tracking-[0.2em] mb-2">Rounds</p>
+                <p className="text-[10px] text-ed-text-muted uppercase tracking-[0.2em] mb-2">{t("Rounds", "الدورات")}</p>
                 <p className="text-3xl font-semibold text-ed-green">{completedRounds}</p>
               </div>
               <div className="w-px bg-ed-green/8"></div>
               <div>
-                <p className="text-[10px] text-ed-text-muted uppercase tracking-[0.2em] mb-2">Lifetime</p>
-                <p className="text-3xl font-semibold text-ed-green">{mounted ? totalCount.toLocaleString() : "–"}</p>
+                <p className="text-[10px] text-ed-text-muted uppercase tracking-[0.2em] mb-2">{t("Lifetime", "المجموع الكلي")}</p>
+                <p className="text-3xl font-semibold text-ed-green">{totalCount.toLocaleString()}</p>
               </div>
             </div>
           </div>
@@ -146,7 +156,7 @@ export default function Tasbeeh() {
           <div className="w-full lg:w-80 space-y-10">
             {/* Choose Zikr */}
             <div>
-              <h3 className="text-xs text-ed-text-muted uppercase tracking-[0.2em] mb-4 font-medium">Choose Zikr</h3>
+              <h3 className="text-xs text-ed-text-muted uppercase tracking-[0.2em] mb-4 font-medium">{t("Choose Zikr", "اختر الذكر")}</h3>
               <div className="space-y-2">
                 {presets.map((preset, index) => (
                   <button
@@ -167,7 +177,7 @@ export default function Tasbeeh() {
 
             {/* Target */}
             <div>
-              <h3 className="text-xs text-ed-text-muted uppercase tracking-[0.2em] mb-4 font-medium">Target</h3>
+              <h3 className="text-xs text-ed-text-muted uppercase tracking-[0.2em] mb-4 font-medium">{t("Target", "الهدف")}</h3>
               <div className="grid grid-cols-2 gap-2">
                 {targets.map((targetValue) => (
                   <button
@@ -186,7 +196,7 @@ export default function Tasbeeh() {
             </div>
 
             <button onClick={resetTotal} className="text-xs text-ed-text-muted hover:text-ed-green transition-colors">
-              Reset Lifetime Total
+              {t("Reset Lifetime Total", "إعادة تعيين المجموع الكلي")}
             </button>
           </div>
         </div>

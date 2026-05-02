@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Search, Loader2, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface Surah {
   number: number;
@@ -19,6 +20,8 @@ export default function Quran() {
   const [surahs, setSurahs] = useState<Surah[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const { language, t } = useLanguage();
+  const isArabic = language === "ar";
 
   useEffect(() => {
     const fetchSurahs = async () => {
@@ -65,11 +68,11 @@ export default function Quran() {
       <div className="max-w-6xl mx-auto px-6 lg:px-10 pt-12 pb-6">
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-12">
           <div>
-            <h1 className="text-5xl md:text-6xl font-[family-name:var(--font-tajawal)] text-ed-green font-bold mb-3">
-              القرآن الكريم
+            <h1 className={`text-5xl md:text-6xl text-ed-green font-bold mb-3 ${isArabic ? "font-[family-name:var(--font-tajawal)]" : ""}`} style={{ fontFamily: isArabic ? undefined : 'Georgia, serif' }}>
+              {t("The Holy Quran", "القرآن الكريم")}
             </h1>
-            <p className="text-sm text-ed-text-muted tracking-wide">
-              The Holy Quran — 114 Surahs with full Arabic text and audio recitations
+            <p className={`text-sm text-ed-text-muted tracking-wide ${isArabic ? "font-[family-name:var(--font-tajawal)]" : ""}`}>
+              {t("114 Surahs with full Arabic text and audio recitations", "114 سورة بالنص العربي الكامل والتلاوات الصوتية")}
             </p>
           </div>
 
@@ -80,7 +83,7 @@ export default function Quran() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search surahs..."
+              placeholder={t("Search surahs...", "ابحث عن سورة...") as string}
               className="w-full bg-white border border-ed-green/10 text-ed-text rounded-none pl-11 pr-4 py-3 text-sm focus:outline-none focus:border-ed-green/30 transition-colors placeholder:text-ed-text-muted"
             />
           </div>
@@ -97,7 +100,7 @@ export default function Quran() {
           </div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-24 text-ed-text-muted text-sm">
-            No surahs found. Try another name.
+            {t("No surahs found. Try another name.", "لم يتم العثور على سور. جرّب اسمًا آخر.")}
           </div>
         ) : (
           <div className="space-y-0">
@@ -125,7 +128,7 @@ export default function Quran() {
                       <span className={`w-1.5 h-1.5 rounded-full ${surah.revelationType === "Meccan" ? "bg-ed-green-soft" : "bg-ed-gold"}`}></span>
                       <span className="text-[10px] text-ed-text-muted uppercase tracking-wider">{surah.revelationType}</span>
                     </div>
-                    <span className="text-xs text-ed-text-muted tabular-nums">{surah.numberOfAyahs} verses</span>
+                    <span className="text-xs text-ed-text-muted tabular-nums">{surah.numberOfAyahs} {t("verses", "آية")}</span>
                     <ArrowRight className="w-3.5 h-3.5 text-ed-text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
                   </div>
                 </div>

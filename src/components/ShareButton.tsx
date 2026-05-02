@@ -31,14 +31,14 @@ export default function ShareButton() {
     <>
       <button
         onClick={handleShare}
-        className="fixed bottom-8 right-8 z-50 w-14 h-14 rounded-full flex items-center justify-center bg-white text-ed-green border border-ed-green/10 shadow-2xl hover:bg-ed-beige transition-all hover:scale-105"
+        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center bg-white text-ed-green border border-ed-green/10 shadow-2xl hover:bg-ed-beige transition-all hover:scale-105"
         title={t("Share the reward", "انشر الخير") as string}
       >
         <Share2 className="w-5 h-5" />
       </button>
 
       {showToast && (
-        <div className="fixed bottom-28 right-8 z-50 bg-white border border-ed-green/10 text-ed-green px-6 py-4 text-sm font-medium flex items-center gap-3 shadow-2xl animate-fade-up rounded-sm">
+        <div className="fixed bottom-20 right-4 sm:bottom-24 sm:right-6 z-50 bg-white border border-ed-green/10 text-ed-green px-6 py-4 text-sm font-medium flex items-center gap-3 shadow-2xl animate-fade-up rounded-sm">
           <LinkIcon className="w-4 h-4 text-ed-gold" />
           <span>{t("Link copied to clipboard!", "تم نسخ الرابط!")}</span>
         </div>

@@ -42,8 +42,20 @@ const scheherazade = Scheherazade_New({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
   title: "Bayan | بيان",
   description: "A modern Islamic digital platform featuring Quran recitations, Islamic Radio, Tafsir, and Prayer Times",
+  openGraph: {
+    title: "Bayan | بيان",
+    description: "A modern Islamic digital platform featuring Quran recitations, Islamic Radio, Tafsir, and Prayer Times",
+    images: ["/assets/logo.png"],
+  },
+  twitter: {
+    card: "summary",
+    title: "Bayan | بيان",
+    description: "A modern Islamic digital platform featuring Quran recitations, Islamic Radio, Tafsir, and Prayer Times",
+    images: ["/assets/logo.png"],
+  },
   icons: {
     icon: "/assets/logo.png",
     apple: "/assets/logo.png",
@@ -56,8 +68,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${outfit.variable} ${tajawal.variable} ${amiri.variable} ${cairo.variable} ${scheherazade.variable}`} suppressHydrationWarning>
-      <body className="min-h-screen antialiased" suppressHydrationWarning>
+    <html lang="ar" dir="rtl" className={`${inter.variable} ${outfit.variable} ${tajawal.variable} ${amiri.variable} ${cairo.variable} ${scheherazade.variable}`} suppressHydrationWarning>
+      <body className="min-h-screen antialiased" dir="rtl" suppressHydrationWarning>
         <LanguageProvider>
           <AudioProvider>
             {children}

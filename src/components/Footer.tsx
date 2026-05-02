@@ -30,13 +30,13 @@ export default function Footer() {
 
           <div className="flex items-center gap-8">
             {footerLinks.map((link) => (
-              <a
+              <Link
                 key={link.name}
                 href={link.href}
                 className={`text-sm text-ed-text-muted hover:text-ed-green transition-colors ${language === 'ar' ? 'font-[family-name:var(--font-tajawal)]' : ''}`}
               >
                 {t(link.name, link.arabic)}
-              </a>
+              </Link>
             ))}
           </div>
         </div>

@@ -139,15 +139,13 @@ Rounded: rounded-2xl
 
 ## 7. Acceptance Criteria
 
-1. ✅ Page loads with smooth animations (no FOUC - Flash of Unstyled Content)
-2. ✅ Navigation becomes glassmorphic on scroll
-3. ✅ All 4 feature cards display with proper glassmorphism styling
-4. ✅ Cards have hover animations (lift + glow + icon scale)
-5. ✅ Arabic text renders correctly (proper font)
-6. ✅ Mobile responsive - hamburger menu works
-7. ✅ Framer Motion animations execute smoothly
-8. ✅ Color palette matches specification exactly
-9. ✅ Islamic star pattern visible in Hero background (subtle)
-10. ✅ CTA button has gold gradient hover effect
-rn visible in Hero background (subtle)
-10. ✅ CTA button has gold gradient hover effect
+1. Page loads with smooth animations (no FOUC - Flash of Unstyled Content)
+2. Navigation becomes glassmorphic on scroll
+3. All 4 feature cards display with proper glassmorphism styling
+4. Cards have hover animations (lift + glow + icon scale)
+5. Arabic text renders correctly (proper font)
+6. Mobile responsive - hamburger menu works
+7. Framer Motion animations execute smoothly
+8. Color palette matches specification exactly
+9. Islamic star pattern visible in Hero background (subtle)
+10. CTA button has gold gradient hover effect

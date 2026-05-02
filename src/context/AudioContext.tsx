@@ -33,6 +33,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const preloadAudioRef = useRef<HTMLAudioElement | null>(null);
 
   // Use refs for the internal audio logic so the ended handler always has
   // up-to-date values without relying on functional state updaters
@@ -43,6 +44,17 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   // Sync refs whenever state changes
   useEffect(() => { playlistRef.current = playlist; }, [playlist]);
   useEffect(() => { indexRef.current = currentIndex; }, [currentIndex]);
+
+  const preloadNextTrack = useCallback((tracks: AudioTrack[], index: number) => {
+    const nextTrack = tracks[index + 1];
+    if (!nextTrack) return;
+    if (!preloadAudioRef.current) {
+      preloadAudioRef.current = new Audio();
+      preloadAudioRef.current.preload = "auto";
+    }
+    preloadAudioRef.current.src = nextTrack.url;
+    preloadAudioRef.current.load();
+  }, []);
 
   const safePlay = useCallback(async () => {
     if (!audioRef.current) return;
@@ -77,7 +89,9 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       // Load and play next track
       if (audioRef.current) {
         audioRef.current.src = nextTrack.url;
+        audioRef.current.load();
         safePlay();
+        preloadNextTrack(pl, nextIdx);
       }
     } else {
       setIsPlaying(false);
@@ -85,12 +99,13 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 
     // Allow next advance after a short delay
     setTimeout(() => { isAdvancingRef.current = false; }, 200);
-  }, [safePlay]);
+  }, [preloadNextTrack, safePlay]);
 
   useEffect(() => {
     if (!audioRef.current) {
       const audio = new Audio();
       audio.volume = volume;
+      audio.preload = "auto";
       audioRef.current = audio;
 
       audio.addEventListener("ended", () => {
@@ -128,6 +143,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 
     if (audioRef.current) {
       audioRef.current.src = track.url;
+      audioRef.current.load();
       safePlay();
     }
   }, [safePlay]);
@@ -144,9 +160,11 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 
     if (audioRef.current) {
       audioRef.current.src = tracks[startIndex].url;
+      audioRef.current.load();
       safePlay();
+      preloadNextTrack(tracks, startIndex);
     }
-  }, [safePlay]);
+  }, [preloadNextTrack, safePlay]);
 
   const togglePlayPause = useCallback(() => {
     if (!audioRef.current) return;

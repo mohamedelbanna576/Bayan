@@ -1,12 +1,18 @@
+"use client";
+
 import Link from "next/link";
 import { BookOpen, ArrowRight, Radio, Sparkles, BookMarked } from "lucide-react";
-import Image from "next/image";
+
 import LandingPrayerTimes from "@/components/LandingPrayerTimes";
+import LandingNav from "@/components/LandingNav";
+import { useLanguage } from "@/context/LanguageContext";
 
 import { getAyahOfTheDay } from "@/data/ayahs";
 
 export default function Home() {
   const ayah = getAyahOfTheDay();
+  const { language, t } = useLanguage();
+  const isArabic = language === "ar";
 
   return (
     <main className="min-h-screen bg-ed-beige selection:bg-ed-gold/20">
@@ -22,21 +28,7 @@ export default function Home() {
         <div className="w-full lg:w-1/2 bg-ed-green relative flex flex-col min-h-[88vh] lg:min-h-screen lg:sticky lg:top-0 overflow-hidden">
 
           {/* Nav for landing */}
-          <nav className="relative z-20 flex items-center justify-between gap-8 px-6 md:px-10 xl:px-12 pt-6">
-            <div className="flex items-center gap-3 shrink-0">
-              <Image src="/assets/logo.png" alt="Bayan" width={32} height={32} className="opacity-90 drop-shadow-md" />
-              <span className="text-2xl text-ed-beige-warm/90 tracking-wider" style={{ fontFamily: 'Georgia, serif' }}>
-                Bayan
-              </span>
-            </div>
-            <div className="hidden md:flex items-center gap-5 xl:gap-6 text-[15px] font-semibold text-ed-beige-warm/85">
-              <Link href="/" className="relative text-white font-bold after:absolute after:left-0 after:-bottom-1.5 after:h-0.5 after:w-full after:bg-ed-gold focus-visible:outline focus-visible:outline-2 focus-visible:outline-ed-gold">Home</Link>
-              <Link href="/quran" className="relative text-ed-beige-warm/85 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ed-gold">Quran</Link>
-              <Link href="/radio" className="relative text-ed-beige-warm/85 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ed-gold">Radio</Link>
-              <Link href="/prayer-times" className="relative text-ed-beige-warm/85 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ed-gold">Prayer Times</Link>
-              <Link href="/azkar" className="relative text-ed-beige-warm/85 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ed-gold">Azkar</Link>
-            </div>
-          </nav>
+          <LandingNav />
           <div className="absolute inset-0 z-0 bg-gradient-to-b from-white/[0.04] via-transparent to-ed-green-dark/25"></div>
 
           {/* Large Arabic Background Typography */}
@@ -48,18 +40,18 @@ export default function Home() {
 
           {/* Hero Text Content */}
           <div className="flex-1 flex flex-col justify-center relative z-10 px-6 md:px-10 xl:px-12 pt-20 pb-28 lg:pb-32 -translate-y-4">
-            <h2 className="text-6xl md:text-7xl xl:text-8xl mb-6 text-white tracking-tight leading-[1.05]" style={{ fontFamily: 'Georgia, serif' }}>
-              Bayan
+            <h2 className={`text-6xl md:text-7xl xl:text-8xl mb-6 text-white tracking-tight leading-[1.05] ${isArabic ? "font-[family-name:var(--font-tajawal)]" : ""}`} style={{ fontFamily: isArabic ? undefined : 'Georgia, serif' }}>
+              {t("Bayan", "بيان")}
             </h2>
-            <p className="text-[17px] md:text-[19px] text-ed-beige-warm/90 leading-relaxed max-w-md mb-10">
-              Your Premium Islamic Digital Companion.<br />
-              Experience the depth of Islamic learning.
+            <p className={`text-[17px] md:text-[19px] text-ed-beige-warm/90 leading-relaxed max-w-md mb-10 ${isArabic ? "font-[family-name:var(--font-tajawal)]" : ""}`} dir={isArabic ? "rtl" : "ltr"}>
+              {t("Your Premium Islamic Digital Companion.", "رفيقك الإسلامي الرقمي المتكامل.")}<br />
+              {t("Experience the depth of Islamic learning.", "استكشف عمق المعرفة الإسلامية.")}
             </p>
             <Link
               href="/quran"
               className="inline-flex items-center gap-2 rounded-xl bg-ed-gold px-8 py-4 text-sm font-extrabold tracking-wide text-ed-green-dark shadow-md shadow-black/10 w-fit focus-visible:outline focus-visible:outline-2 focus-visible:outline-ed-beige-warm"
             >
-              Begin Journey
+              {t("Begin Journey", "ابدأ الرحلة")}
             </Link>
           </div>
 
@@ -71,15 +63,15 @@ export default function Home() {
               <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center mb-4">
                 <BookOpen className="w-4 h-4 text-ed-gold-muted" />
               </div>
-              <h4 className="text-sm text-ed-beige-warm mb-1.5 font-semibold">Featured Recitations</h4>
-              <p className="text-sm text-ed-beige-warm/80 leading-relaxed">Recite and listen to the complete Quran with over 30 reciters.</p>
+              <h4 className={`text-sm text-ed-beige-warm mb-1.5 font-semibold ${isArabic ? "font-[family-name:var(--font-tajawal)]" : ""}`}>{t("Featured Recitations", "تلاوات مميزة")}</h4>
+              <p className={`text-sm text-ed-beige-warm/80 leading-relaxed ${isArabic ? "font-[family-name:var(--font-tajawal)]" : ""}`} dir={isArabic ? "rtl" : "ltr"}>{t("Recite and listen to the complete Quran with over 30 reciters.", "اقرأ واستمع إلى القرآن الكريم كاملًا بأكثر من 30 قارئًا.")}</p>
             </div>
             <div className="max-w-[200px]">
               <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center mb-4">
                 <ArrowRight className="w-4 h-4 text-ed-gold-muted" />
               </div>
-              <h4 className="text-sm text-ed-beige-warm mb-1.5 font-semibold">Continue Your Journey</h4>
-              <p className="text-sm text-ed-beige-warm/80 leading-relaxed">Pick up right where you left off and seamlessly resume your daily reading.</p>
+              <h4 className={`text-sm text-ed-beige-warm mb-1.5 font-semibold ${isArabic ? "font-[family-name:var(--font-tajawal)]" : ""}`}>{t("Continue Your Journey", "واصل رحلتك")}</h4>
+              <p className={`text-sm text-ed-beige-warm/80 leading-relaxed ${isArabic ? "font-[family-name:var(--font-tajawal)]" : ""}`} dir={isArabic ? "rtl" : "ltr"}>{t("Pick up right where you left off and seamlessly resume your daily reading.", "تابع من حيث توقفت واستكمل وردك اليومي بسهولة.")}</p>
             </div>
           </div>
         </div>
@@ -101,15 +93,15 @@ export default function Home() {
               </div>
             </div>
             {/* Text */}
-            <div className="text-center xl:text-left">
-              <h2 className="text-[1.7rem] xl:text-[2.1rem] text-ed-green-dark tracking-tight mb-4 leading-tight" style={{ fontFamily: 'Georgia, serif' }}>
-                Quran<br />Recitations
+            <div className={`text-center ${isArabic ? "xl:text-right" : "xl:text-left"}`}>
+              <h2 className={`text-[1.7rem] xl:text-[2.1rem] text-ed-green-dark tracking-tight mb-4 leading-tight ${isArabic ? "font-[family-name:var(--font-tajawal)]" : ""}`} style={{ fontFamily: isArabic ? undefined : 'Georgia, serif' }}>
+                {t(<>Quran<br />Recitations</>, <>تلاوات<br />القرآن</>)}
               </h2>
-              <p className="text-base text-ed-text-secondary leading-relaxed max-w-xs">
-                Recite and listen to the complete Quran with over 30 reciters.
+              <p className={`text-base text-ed-text-secondary leading-relaxed max-w-xs ${isArabic ? "font-[family-name:var(--font-tajawal)]" : ""}`} dir={isArabic ? "rtl" : "ltr"}>
+                {t("Recite and listen to the complete Quran with over 30 reciters.", "اقرأ واستمع إلى القرآن الكريم كاملًا بأكثر من 30 قارئًا.")}
               </p>
               <Link href="/quran" className="inline-flex items-center gap-1.5 rounded-full text-sm text-ed-gold font-bold mt-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ed-gold">
-                Explore <ArrowRight className="w-3.5 h-3.5" />
+                {t("Explore", "استكشف")} <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
           </section>
@@ -125,16 +117,16 @@ export default function Home() {
             {/* Framed quote card */}
             <div className="relative z-10 w-full max-w-lg rounded-2xl bg-white p-2 shadow-[0_18px_45px_rgba(44,54,42,0.10)]">
               <div className="rounded-xl border border-ed-gold-muted/60 p-10 md:p-14 text-center bg-ed-beige-light">
-                <h3 className="text-base text-ed-green mb-8" style={{ fontFamily: 'Georgia, serif' }}>
-                  Ayah of the Day
+                <h3 className={`text-base text-ed-green mb-8 ${isArabic ? "font-[family-name:var(--font-tajawal)]" : ""}`} style={{ fontFamily: isArabic ? undefined : 'Georgia, serif' }}>
+                  {t("Ayah of the Day", "آية اليوم")}
                 </h3>
 
                 <p className="text-2xl md:text-3xl font-[family-name:var(--font-amiri)] text-ed-green leading-[2.2] mb-6" dir="rtl">
                   {ayah.arabic}
                 </p>
 
-                <p className="text-lg text-ed-text-secondary leading-[1.9] italic max-w-sm mx-auto">
-                  &ldquo;{ayah.english}&rdquo;
+                <p className={`text-lg text-ed-text-secondary leading-[1.9] italic max-w-sm mx-auto ${isArabic ? "font-[family-name:var(--font-tajawal)]" : ""}`} dir={isArabic ? "rtl" : "ltr"}>
+                  &ldquo;{t(ayah.english, ayah.arabic)}&rdquo;
                 </p>
                 <p className="text-[11px] text-ed-gold mt-4 font-semibold uppercase tracking-widest">{ayah.reference}</p>
               </div>
@@ -151,28 +143,28 @@ export default function Home() {
                 <BookOpen className="w-5 h-5 text-ed-gold-muted" />
               </div>
               <div>
-                <h4 className="text-lg text-white font-semibold mb-1">Explore More</h4>
-                <p className="text-sm text-ed-beige-warm/80 leading-relaxed max-w-sm">
-                  Discover Islamic radio, digital tasbeeh, daily azkar and tafsir all in one place.
+                <h4 className={`text-lg text-white font-semibold mb-1 ${isArabic ? "font-[family-name:var(--font-tajawal)]" : ""}`}>{t("Explore More", "استكشف المزيد")}</h4>
+                <p className={`text-sm text-ed-beige-warm/80 leading-relaxed max-w-sm ${isArabic ? "font-[family-name:var(--font-tajawal)]" : ""}`} dir={isArabic ? "rtl" : "ltr"}>
+                  {t("Discover Islamic radio, digital tasbeeh, daily azkar and tafsir all in one place.", "اكتشف الإذاعة الإسلامية، التسبيح الرقمي، الأذكار اليومية والتفسير في مكان واحد.")}
                 </p>
               </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 auto-rows-fr">
               <Link href="/radio" className="flex min-h-[64px] w-full items-center gap-3 rounded-2xl border border-white/10 bg-white/10 px-5 py-4 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-ed-gold">
                 <Radio className="w-4 h-4 text-ed-gold-muted" />
-                <span className="text-sm font-semibold">Islamic Radio</span>
+                <span className={`text-sm font-semibold ${isArabic ? "font-[family-name:var(--font-tajawal)]" : ""}`}>{t("Islamic Radio", "الإذاعة الإسلامية")}</span>
               </Link>
               <Link href="/tasbeeh" className="flex min-h-[64px] w-full items-center gap-3 rounded-2xl border border-white/10 bg-white/10 px-5 py-4 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-ed-gold">
                 <Sparkles className="w-4 h-4 text-ed-gold-muted" />
-                <span className="text-sm font-semibold">Digital Tasbeeh</span>
+                <span className={`text-sm font-semibold ${isArabic ? "font-[family-name:var(--font-tajawal)]" : ""}`}>{t("Digital Tasbeeh", "التسبيح الرقمي")}</span>
               </Link>
               <Link href="/azkar" className="flex min-h-[64px] w-full items-center gap-3 rounded-2xl border border-white/10 bg-white/10 px-5 py-4 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-ed-gold">
                 <BookOpen className="w-4 h-4 text-ed-gold-muted" />
-                <span className="text-sm font-semibold">Daily Azkar</span>
+                <span className={`text-sm font-semibold ${isArabic ? "font-[family-name:var(--font-tajawal)]" : ""}`}>{t("Daily Azkar", "الأذكار اليومية")}</span>
               </Link>
               <Link href="/tafsir" className="flex min-h-[64px] w-full items-center gap-3 rounded-2xl border border-white/10 bg-white/10 px-5 py-4 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-ed-gold">
                 <BookMarked className="w-4 h-4 text-ed-gold-muted" />
-                <span className="text-sm font-semibold">Tafsir</span>
+                <span className={`text-sm font-semibold ${isArabic ? "font-[family-name:var(--font-tajawal)]" : ""}`}>{t("Tafsir", "التفسير")}</span>
               </Link>
             </div>
           </section>

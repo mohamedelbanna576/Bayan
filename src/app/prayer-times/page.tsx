@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { MapPin, Loader2, Navigation } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface PrayerTimesData {
   Fajr: string;
@@ -49,6 +50,8 @@ export default function PrayerTimes() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [locationName, setLocationName] = useState<string>("Detecting location...");
+  const { language, t } = useLanguage();
+  const isArabic = language === "ar";
   const [dateStr] = useState<string>(() => {
     const now = new Date();
     return now.toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
@@ -146,10 +149,10 @@ export default function PrayerTimes() {
       <div className="max-w-5xl mx-auto px-6 lg:px-10 pt-12 pb-24">
         {/* Header */}
         <div className="mb-12">
-          <h1 className="text-5xl md:text-6xl font-[family-name:var(--font-tajawal)] text-ed-green font-bold mb-3">
-            مواقيت الصلاة
+          <h1 className={`text-5xl md:text-6xl text-ed-green font-bold mb-3 ${isArabic ? "font-[family-name:var(--font-tajawal)]" : ""}`} style={{ fontFamily: isArabic ? undefined : 'Georgia, serif' }}>
+            {t("Prayer Times", "مواقيت الصلاة")}
           </h1>
-          <p className="text-sm text-ed-text-muted tracking-wide">Prayer Times</p>
+          <p className={`text-sm text-ed-text-muted tracking-wide ${isArabic ? "font-[family-name:var(--font-tajawal)]" : ""}`}>{t("Accurate prayer times based on your location", "مواقيت صلاة دقيقة حسب موقعك")}</p>
         </div>
 
         {/* Location Controls */}
@@ -170,7 +173,7 @@ export default function PrayerTimes() {
             className="flex items-center justify-center gap-2 px-6 py-3 bg-white border border-ed-green/10 text-ed-text text-sm hover:bg-ed-beige-light transition-colors"
           >
             <Navigation className="w-3.5 h-3.5 text-ed-green-soft" />
-            Use My Location
+            {t("Use My Location", "استخدم موقعي")}
           </button>
         </div>
 
@@ -200,7 +203,7 @@ export default function PrayerTimes() {
               </div>
               {nextPrayer && (
                 <div className="bg-white border border-ed-green/8 px-6 py-4 text-center">
-                  <p className="text-[10px] text-ed-text-muted uppercase tracking-[0.2em] mb-1">Next Prayer</p>
+                  <p className="text-[10px] text-ed-text-muted uppercase tracking-[0.2em] mb-1">{t("Next Prayer", "الصلاة القادمة")}</p>
                   <p className="text-lg font-semibold text-ed-green" style={{ fontFamily: 'Georgia, serif' }}>{nextPrayer.name}</p>
                   <p className="text-sm text-ed-text-secondary font-mono">{convertTo12Hour(nextPrayer.time)}</p>
                 </div>
@@ -220,7 +223,7 @@ export default function PrayerTimes() {
                     <span className="text-2xl font-[family-name:var(--font-amiri)] text-ed-green w-32 text-right" dir="rtl">
                       {prayer.arabic}
                     </span>
-                    <span className="text-xs text-ed-text-muted uppercase tracking-widest">{prayer.name}</span>
+                    <span className="text-xs text-ed-text-muted uppercase tracking-widest">{isArabic ? "" : prayer.name}</span>
                   </div>
                   <div className="flex items-center gap-4">
                     <span className="text-lg font-mono text-ed-green font-medium">
@@ -228,7 +231,7 @@ export default function PrayerTimes() {
                     </span>
                     {nextPrayer?.name === prayer.name && (
                       <span className="text-[10px] bg-ed-green text-ed-beige px-2.5 py-1 uppercase tracking-widest font-medium">
-                        Next
+                        {t("Next", "التالية")}
                       </span>
                     )}
                   </div>

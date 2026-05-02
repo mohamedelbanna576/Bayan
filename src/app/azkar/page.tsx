@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { useLanguage } from "@/context/LanguageContext";
 import { Sun, Moon, Sparkles, CheckCircle2 } from "lucide-react";
 
 type Zikr = {
@@ -39,6 +40,8 @@ const postPrayerAzkar: Zikr[] = [
 export default function Azkar() {
   const [activeCategory, setActiveCategory] = useState<"morning" | "evening" | "prayer">("morning");
   const [counts, setCounts] = useState<Record<number, number>>({});
+  const { language, t } = useLanguage();
+  const isArabic = language === "ar";
 
   const getActiveAzkar = () => {
     switch (activeCategory) {
@@ -58,7 +61,7 @@ export default function Azkar() {
   };
 
   const resetAll = () => {
-    if (confirm("Are you sure you want to reset all counts?")) setCounts({});
+    if (confirm(t("Are you sure you want to reset all counts?", "هل أنت متأكد من إعادة تعيين كل العدادات؟") as string)) setCounts({});
   };
 
   const categories = [
@@ -71,16 +74,16 @@ export default function Azkar() {
   const completedCount = azkarList.filter(z => (counts[z.id] || 0) >= z.count).length;
 
   return (
-    <main className="min-h-screen bg-[#F4F0E6] pt-20">
+    <main className="min-h-screen bg-ed-beige pt-20">
       <Navbar />
 
       <div className="max-w-4xl mx-auto px-6 lg:px-10 pt-12 pb-24">
         {/* Header */}
         <div className="mb-12">
-          <h1 className="text-5xl md:text-6xl font-[family-name:var(--font-tajawal)] text-[#3B4A3F] font-bold mb-3">
-            الأذكار
+          <h1 className={`text-5xl md:text-6xl text-ed-green font-bold mb-3 ${isArabic ? "font-[family-name:var(--font-tajawal)]" : ""}`} style={{ fontFamily: isArabic ? undefined : 'Georgia, serif' }}>
+            {t("Daily Azkar", "الأذكار")}
           </h1>
-          <p className="text-sm text-[#8C9886] tracking-wide">Daily Supplications</p>
+          <p className={`text-sm text-ed-text-muted tracking-wide ${isArabic ? "font-[family-name:var(--font-tajawal)]" : ""}`}>{t("Daily Supplications", "الأدعية اليومية")}</p>
         </div>
 
         {/* Category Tabs */}
@@ -91,31 +94,31 @@ export default function Azkar() {
               onClick={() => setActiveCategory(cat.key)}
               className={`flex items-center gap-2.5 px-5 py-3 text-sm transition-all border font-[family-name:var(--font-tajawal)] ${
                 activeCategory === cat.key
-                  ? "bg-[#3B4A3F] text-[#F4F0E6] border-[#3B4A3F] font-semibold"
-                  : "bg-white border-[#3B4A3F]/10 text-[#5A6B5D] hover:border-[#3B4A3F]/25 hover:text-[#3B4A3F]"
+                  ? "bg-ed-green text-ed-beige border-ed-green font-semibold"
+                  : "bg-white border-ed-green/10 text-ed-text-secondary hover:border-ed-green/25 hover:text-ed-green"
               }`}
             >
               <cat.icon className="w-4 h-4" />
-              {cat.label}
+              {t(cat.englishLabel, cat.label)}
             </button>
           ))}
         </div>
 
         {/* Progress + Reset */}
-        <div className="flex items-center justify-between mb-8 py-4 border-y border-[#3B4A3F]/8">
+        <div className="flex items-center justify-between mb-8 py-4 border-y border-ed-green/8">
           <div className="flex items-center gap-3">
-            <span className="text-[10px] text-[#8C9886] uppercase tracking-[0.2em] font-medium">Progress</span>
-            <span className="text-sm font-semibold text-[#3B4A3F]">{completedCount} / {azkarList.length}</span>
+            <span className="text-[10px] text-ed-text-muted uppercase tracking-[0.2em] font-medium">{t("Progress", "التقدم")}</span>
+            <span className="text-sm font-semibold text-ed-green">{completedCount} / {azkarList.length}</span>
             {/* Mini progress bar */}
-            <div className="w-24 h-1 bg-[#3B4A3F]/8 hidden sm:block">
+            <div className="w-24 h-1 bg-ed-green/8 hidden sm:block">
               <div
-                className="h-full bg-[#CEAA69] transition-all duration-500"
+                className="h-full bg-ed-gold transition-all duration-500"
                 style={{ width: `${azkarList.length > 0 ? (completedCount / azkarList.length) * 100 : 0}%` }}
               ></div>
             </div>
           </div>
-          <button onClick={resetAll} className="text-xs text-[#8C9886] hover:text-[#3B4A3F] transition-colors">
-            Reset
+          <button onClick={resetAll} className="text-xs text-ed-text-muted hover:text-ed-green transition-colors">
+            {t("Reset", "إعادة تعيين")}
           </button>
         </div>
 
@@ -130,27 +133,27 @@ export default function Azkar() {
                 key={zikr.id}
                 className={`border transition-all cursor-pointer select-none relative overflow-hidden ${
                   isComplete
-                    ? "bg-[#FCFAF5] border-[#3B4A3F]/15"
-                    : "bg-white border-[#3B4A3F]/5 hover:border-[#3B4A3F]/15 active:scale-[0.995]"
+                    ? "bg-ed-beige-light border-ed-green/15"
+                    : "bg-white border-ed-green/5 hover:border-ed-green/15 active:scale-[0.995]"
                 }`}
                 onClick={() => handleTap(zikr)}
               >
                 {/* Gold progress bar at bottom */}
                 <div
-                  className="absolute bottom-0 left-0 h-[2px] bg-[#CEAA69] transition-all duration-300"
+                  className="absolute bottom-0 left-0 h-[2px] bg-ed-gold transition-all duration-300"
                   style={{ width: `${(currentCount / zikr.count) * 100}%` }}
                 />
 
                 {/* Zikr number indicator */}
                 <div className="flex items-center gap-3 px-6 md:px-8 pt-6">
                   <span className={`w-6 h-6 flex items-center justify-center text-[10px] font-bold ${
-                    isComplete ? "bg-[#3B4A3F] text-[#F4F0E6]" : "bg-[#F4F0E6] text-[#8C9886]"
+                    isComplete ? "bg-ed-green text-ed-beige" : "bg-ed-beige text-ed-text-muted"
                   }`}>
                     {index + 1}
                   </span>
                   {isComplete && (
-                    <span className="flex items-center gap-1.5 text-[#3B4A3F] text-xs font-medium">
-                      <CheckCircle2 className="w-3.5 h-3.5" /> Completed
+                    <span className="flex items-center gap-1.5 text-ed-green text-xs font-medium">
+                      <CheckCircle2 className="w-3.5 h-3.5" /> {t("Completed", "مكتمل")}
                     </span>
                   )}
                 </div>
@@ -158,14 +161,14 @@ export default function Azkar() {
                 {/* Arabic text */}
                 <div className="px-6 md:px-8 py-5" dir="rtl">
                   <p className={`text-xl sm:text-2xl leading-[2.2] font-[family-name:var(--font-amiri)] transition-colors ${
-                    isComplete ? "text-[#8C9886]" : "text-[#3B4A3F]"
+                    isComplete ? "text-ed-text-muted" : "text-ed-green"
                   }`}>
                     {zikr.text}
                   </p>
 
                   {zikr.virtue && (
-                    <p className="mt-4 text-xs text-[#8C9886] font-[family-name:var(--font-tajawal)] leading-relaxed border-t border-[#3B4A3F]/5 pt-4">
-                      <span className="inline-block w-1 h-1 rounded-full bg-[#CEAA69] mr-2 align-middle"></span>
+                    <p className="mt-4 text-xs text-ed-text-muted font-[family-name:var(--font-tajawal)] leading-relaxed border-t border-ed-green/5 pt-4">
+                      <span className="inline-block w-1 h-1 rounded-full bg-ed-gold mr-2 align-middle"></span>
                       {zikr.virtue}
                     </p>
                   )}
@@ -174,16 +177,16 @@ export default function Azkar() {
                 {/* Counter footer */}
                 <div className="flex items-center justify-between px-6 md:px-8 pb-5">
                   {!isComplete && (
-                    <span className="text-[10px] text-[#8C9886] uppercase tracking-[0.2em]">
-                      Tap to count
+                    <span className="text-[10px] text-ed-text-muted uppercase tracking-[0.2em]">
+                      {t("Tap to count", "اضغط للعدّ")}
                     </span>
                   )}
                   {isComplete && <span></span>}
 
                   <span className={`px-3.5 py-1.5 text-sm font-medium border tabular-nums ${
                     isComplete
-                      ? "bg-[#3B4A3F] text-[#F4F0E6] border-[#3B4A3F]"
-                      : "bg-white border-[#3B4A3F]/10 text-[#3B4A3F]"
+                      ? "bg-ed-green text-ed-beige border-ed-green"
+                      : "bg-white border-ed-green/10 text-ed-green"
                   }`}>
                     {currentCount} / {zikr.count}
                   </span>

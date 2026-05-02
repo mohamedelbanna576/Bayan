@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Search, Loader2, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface Surah {
   number: number;
@@ -28,6 +29,8 @@ export default function Tafsir() {
   const [surahs, setSurahs] = useState<Surah[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const { language, t } = useLanguage();
+  const isArabic = language === "ar";
 
   useEffect(() => {
     const fetchSurahs = async () => {
@@ -60,11 +63,11 @@ export default function Tafsir() {
       <div className="max-w-6xl mx-auto px-6 lg:px-10 pt-12 pb-24">
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-12">
           <div>
-            <h1 className="text-5xl md:text-6xl font-[family-name:var(--font-tajawal)] text-ed-green font-bold mb-3">
-              تفسير القرآن الكريم
+            <h1 className={`text-5xl md:text-6xl text-ed-green font-bold mb-3 ${isArabic ? "font-[family-name:var(--font-tajawal)]" : ""}`} style={{ fontFamily: isArabic ? undefined : 'Georgia, serif' }}>
+              {t("Quran Tafsir", "تفسير القرآن الكريم")}
             </h1>
-            <p className="text-sm text-ed-text-muted tracking-wide">
-              Quran Tafsir — Detailed interpretations from renowned scholars
+            <p className={`text-sm text-ed-text-muted tracking-wide ${isArabic ? "font-[family-name:var(--font-tajawal)]" : ""}`}>
+              {t("Detailed interpretations from renowned scholars", "تفسيرات مفصّلة من علماء مشهورين")}
             </p>
           </div>
           <div className="relative w-full lg:w-80">
@@ -73,7 +76,7 @@ export default function Tafsir() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search surahs..."
+              placeholder={t("Search surahs...", "ابحث عن سورة...") as string}
               className="w-full bg-white border border-ed-green/10 text-ed-text rounded-none pl-11 pr-4 py-3 text-sm focus:outline-none focus:border-ed-green/30 transition-colors placeholder:text-ed-text-muted"
             />
           </div>
@@ -86,7 +89,7 @@ export default function Tafsir() {
             <Loader2 className="w-8 h-8 text-ed-green-soft animate-spin" />
           </div>
         ) : filtered.length === 0 ? (
-          <div className="text-center py-24 text-ed-text-muted text-sm">No tafsir results found.</div>
+          <div className="text-center py-24 text-ed-text-muted text-sm">{t("No tafsir results found.", "لم يتم العثور على نتائج تفسير.")}</div>
         ) : (
           <div className="space-y-0">
             {filtered.map((surah, index) => (
@@ -100,7 +103,7 @@ export default function Tafsir() {
                     </div>
                   </div>
                   <div className="flex items-center gap-6">
-                    <span className="text-xs text-ed-text-muted tabular-nums">{surah.numberOfAyahs} verses</span>
+                    <span className="text-xs text-ed-text-muted tabular-nums">{surah.numberOfAyahs} {t("verses", "آية")}</span>
                     <ArrowRight className="w-3.5 h-3.5 text-ed-text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
                   </div>
                 </div>

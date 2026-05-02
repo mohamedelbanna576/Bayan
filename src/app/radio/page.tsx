@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import { Search, Loader2, Play, Pause } from "lucide-react";
 import { useAudio } from "@/context/AudioContext";
 import GlobalAudioPlayer from "@/components/GlobalAudioPlayer";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface RadioStation {
   id: number;
@@ -25,6 +26,8 @@ export default function IslamicRadio() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { currentTrack, isPlaying, playTrack, togglePlayPause } = useAudio();
+  const { language, t } = useLanguage();
+  const isArabic = language === "ar";
 
   const isCurrentlyPlaying = (stationId: number) =>
     currentTrack?.type === "radio" && currentTrack.id === stationId && isPlaying;
@@ -70,11 +73,11 @@ export default function IslamicRadio() {
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-12">
           <div>
-            <h1 className="text-5xl md:text-6xl font-[family-name:var(--font-tajawal)] text-ed-green font-bold mb-3">
-              إذاعة القرآن الكريم  </h1>
-
-            <p className="text-sm text-ed-text-muted tracking-wide">
-              Islamic Radio Stations — Live Quran recitations from renowned reciters
+            <h1 className={`text-5xl md:text-6xl text-ed-green font-bold mb-3 ${isArabic ? "font-[family-name:var(--font-tajawal)]" : ""}`} style={{ fontFamily: isArabic ? undefined : 'Georgia, serif' }}>
+              {t("Islamic Radio", "إذاعة القرآن الكريم")}
+            </h1>
+            <p className={`text-sm text-ed-text-muted tracking-wide ${isArabic ? "font-[family-name:var(--font-tajawal)]" : ""}`}>
+              {t("Live Quran recitations from renowned reciters", "تلاوات قرآنية مباشرة من قرّاء مشهورين")}
             </p>
           </div>
           <div className="relative w-full lg:w-72">
@@ -83,7 +86,7 @@ export default function IslamicRadio() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search stations..."
+              placeholder={t("Search stations...", "ابحث عن محطة...") as string}
               className="w-full bg-white border border-ed-green/10 text-ed-text rounded-none pl-11 pr-4 py-3 text-sm focus:outline-none focus:border-ed-green/30 transition-colors placeholder:text-ed-text-muted"
             />
           </div>
@@ -98,7 +101,7 @@ export default function IslamicRadio() {
             <Loader2 className="w-8 h-8 text-ed-green-soft animate-spin" />
           </div>
         ) : error ? (
-          <div className="text-center py-24 text-ed-text-muted text-sm">{error}</div>
+          <div className={`text-center py-24 text-ed-text-muted text-sm ${isArabic ? "font-[family-name:var(--font-tajawal)]" : ""}`}>{error}</div>
         ) : (
           <div className="space-y-0">
             {filtered.map((station, index) => (
@@ -126,15 +129,15 @@ export default function IslamicRadio() {
                     ? isCurrentlyPlaying(station.id)
                       ? "bg-ed-green text-ed-beige"
                       : "bg-ed-green/10 text-ed-green border border-ed-green/20"
-                    : "bg-white border border-ed-green/10 text-ed-text-muted hover:border-ed-green/20 hover:text-ed-green opacity-0 group-hover:opacity-100"
+                    : "bg-white border border-ed-green/10 text-ed-text-muted hover:border-ed-green/20 hover:text-ed-green sm:opacity-0 sm:group-hover:opacity-100"
                     }`}
                 >
                   {isCurrentlyPlaying(station.id) ? (
-                    <><Pause className="w-3 h-3" /> Pause</>
+                    <><Pause className="w-3 h-3" /> {t("Pause", "إيقاف")}</>
                   ) : isCurrentStation(station.id) ? (
-                    <><Play className="w-3 h-3" /> Resume</>
+                    <><Play className="w-3 h-3" /> {t("Resume", "استئناف")}</>
                   ) : (
-                    <><Play className="w-3 h-3" /> Listen</>
+                    <><Play className="w-3 h-3" /> {t("Listen", "استمع")}</>
                   )}
                 </button>
               </div>
