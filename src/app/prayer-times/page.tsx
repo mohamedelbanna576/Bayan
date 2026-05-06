@@ -119,7 +119,7 @@ export default function PrayerTimes() {
     const cleanTime = time24.split(" ")[0];
     const [hours, minutes] = cleanTime.split(":");
     let h = parseInt(hours, 10);
-    const ampm = h >= 12 ? "PM" : "AM";
+    const ampm = h >= 12 ? "م" : "ص";
     h = h % 12 || 12;
     return `${h}:${minutes} ${ampm}`;
   };

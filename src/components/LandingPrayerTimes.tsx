@@ -58,7 +58,7 @@ export default function LandingPrayerTimes() {
     const [hours, minutes] = cleanTime.split(":");
     let h = parseInt(hours, 10);
     h = h % 12 || 12;
-    const ampm = parseInt(hours, 10) >= 12 ? "PM" : "AM";
+    const ampm = parseInt(hours, 10) >= 12 ? "م" : "ص";
     return `${h}:${minutes} ${ampm}`;
   };
 

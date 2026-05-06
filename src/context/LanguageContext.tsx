@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 
@@ -19,7 +19,15 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
 
 
   useEffect(() => {
+    const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY) as Language | null;
+    if (stored && (stored === "en" || stored === "ar")) {
+      setLanguageState(stored);
+    }
+  }, []);
+
+  useEffect(() => {
     document.documentElement.lang = language;
+    document.documentElement.dir = language === "ar" ? "rtl" : "ltr";
   }, [language]);
 
   const setLanguage = useCallback((lang: Language) => {
@@ -28,17 +36,19 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
   }, []);
 
   const toggleLanguage = useCallback(() => {
-    const newLang = language === 'en' ? 'ar' : 'en';
-    localStorage.setItem(LANGUAGE_STORAGE_KEY, newLang);
-    setLanguageState(newLang);
-  }, [language]);
+    setLanguageState(prev => {
+      const newLang = prev === 'en' ? 'ar' : 'en';
+      localStorage.setItem(LANGUAGE_STORAGE_KEY, newLang);
+      return newLang;
+    });
+  }, []);
 
   const t = useCallback((en: React.ReactNode, ar: React.ReactNode) => {
     return language === 'en' ? en : ar;
   }, [language]);
 
   return (
-    <LanguageContext.Provider key={language} value={{ language, setLanguage, toggleLanguage, t }}>
+    <LanguageContext.Provider value={{ language, setLanguage, toggleLanguage, t }}>
       {children}
     </LanguageContext.Provider>
   );

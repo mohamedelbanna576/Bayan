@@ -81,23 +81,42 @@ body {
 }
 
 /* ── Volume slider ─────────────────────────────────────────── */
-input[type="range"]::-webkit-slider-thumb {
+input[type="range"].volume-slider {
   -webkit-appearance: none;
   appearance: none;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: var(--gold);
+  background: transparent;
   cursor: pointer;
-  border: 2px solid var(--green-deep);
 }
-input[type="range"]::-moz-range-thumb {
-  width: 14px;
-  height: 14px;
+input[type="range"].volume-slider::-webkit-slider-runnable-track {
+  height: 3px;
+  border-radius: 999px;
+  background: transparent;
+}
+input[type="range"].volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   background: var(--gold);
   cursor: pointer;
-  border: 2px solid var(--green-deep);
+  border: none;
+  margin-top: -4.5px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+input[type="range"].volume-slider::-moz-range-track {
+  height: 3px;
+  border-radius: 999px;
+  background: transparent;
+}
+input[type="range"].volume-slider::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--gold);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
 }
 
 /* ── Animations ────────────────────────────────────────────── */
