@@ -253,6 +253,15 @@ export default function SurahPage({ params }: { params: Promise<{ id: string }> 
               // U+06DD is "End of Ayah" — Scheherazade New renders digits inside it
               const marker = "\u06DD" + arabicNum;
               
+              let ayahText = ayah.text;
+              // Strip Basmala from first Ayah if not Surah 1 or 9
+              if (ayah.numberInSurah === 1 && surah.number !== 1 && surah.number !== 9) {
+                const words = ayahText.split(" ");
+                if (words.length > 4) {
+                  ayahText = words.slice(4).join(" ");
+                }
+              }
+
               return (
                 <span
                   key={ayah.numberInSurah}
@@ -261,7 +270,7 @@ export default function SurahPage({ params }: { params: Promise<{ id: string }> 
                     isPlayingAyah ? "text-ed-gold" : ""
                   }`}
                 >
-                  {ayah.text} {marker}{" "}
+                  {ayahText} {marker}{" "}
                 </span>
               );
             })}

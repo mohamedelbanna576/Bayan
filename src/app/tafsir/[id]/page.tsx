@@ -160,7 +160,16 @@ export default function TafsirPage({ params }: { params: Promise<{ id: string }>
                   {arabicAyahs[index] && (
                     <div className="bg-ed-beige-light p-5 border border-ed-green/5">
                       <p className="text-ed-green text-xl sm:text-2xl leading-[2.5] font-[family-name:var(--font-amiri)] text-right" dir="rtl">
-                        {arabicAyahs[index].text}
+                        {(() => {
+                          let text = arabicAyahs[index].text;
+                          if (arabicAyahs[index].numberInSurah === 1 && surahInfo?.number !== 1 && surahInfo?.number !== 9) {
+                            const words = text.split(" ");
+                            if (words.length > 4) {
+                              text = words.slice(4).join(" ");
+                            }
+                          }
+                          return text;
+                        })()}
                       </p>
                     </div>
                   )}
